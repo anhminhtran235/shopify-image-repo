@@ -1,0 +1,34 @@
+{
+  "name": "shopify-image-repo",
+  "version": "1.0.0",
+  "description": "Shopify backend intern challenge",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "test": "jest --watch"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anhminhtran235/shopify-image-repo.git"
+  },
+  "author": "Anh Minh Tran",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anhminhtran235/shopify-image-repo/issues"
+  },
+  "homepage": "https://github.com/anhminhtran235/shopify-image-repo#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "mysql2": "^2.3.0",
+    "sequelize": "^6.6.5"
+  },
+  "devDependencies": {
+    "jest": "^27.1.1",
+    "nodemon": "^2.0.12",
+    "supertest": "^6.1.6"
+  }
+}
