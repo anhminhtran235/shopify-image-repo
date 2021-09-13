@@ -27,16 +27,14 @@ afterEach(() => {
   Image.destroy({ where: {}, truncate: true });
 });
 
-describe('Should get all images', () => {
+describe('Test get all images', () => {
   it('Get all images successfully', async () => {
     const response = await request(app).get('/images').expect(200);
     const images = response.body;
     const image = images[0];
-
     expect(images.length).toBe(1);
     expect(image.filename).toBe(imageData.filename);
     expect(image.awsKey).toBe(imageData.awsKey);
     expect(image.user.name).toBe(userData.name);
-    expect(image.user.password).toBe(userData.password);
   });
 });

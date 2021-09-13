@@ -15,7 +15,12 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     toJSON() {
-      return shallowCloneRemoveFields(this.get(), 'id');
+      return shallowCloneRemoveFields(
+        this.get(),
+        'id',
+        'password',
+        'updatedAt'
+      );
     }
   }
   User.init(

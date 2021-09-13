@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "test": "jest --watch"
+    "test": "jest --watch --runInBand"
   },
   "jest": {
     "testEnvironment": "node"
@@ -22,7 +22,10 @@
   "homepage": "https://github.com/anhminhtran235/shopify-image-repo#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "config": "^3.3.6",
     "express": "^4.17.1",
+    "express-validator": "^6.12.1",
+    "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.0",
     "sequelize": "^6.6.5"
   },
