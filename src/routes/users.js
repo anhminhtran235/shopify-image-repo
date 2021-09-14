@@ -50,7 +50,7 @@ router.post(
 
       jwt.sign(
         payload,
-        config.get('jsonSecret'),
+        config.get('JWT_SECRET'),
         { expiresIn: 360000 },
         (err, token) => {
           if (err) {
@@ -102,7 +102,7 @@ router.post(
 
       jwt.sign(
         payload,
-        config.get('jsonSecret'),
+        config.get('JWT_SECRET'),
         { expiresIn: 360000 },
         (err, token) => {
           if (err) {

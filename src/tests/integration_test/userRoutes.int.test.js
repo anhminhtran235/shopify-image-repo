@@ -73,7 +73,7 @@ describe('Test register new user', () => {
     const token = response.body.token;
 
     expect(token).not.toBeNull();
-    expect(() => jwt.verify(token, config.get('jsonSecret'))).not.toThrow();
+    expect(() => jwt.verify(token, config.get('JWT_SECRET'))).not.toThrow();
   });
 
   it('Token should include the correct user uuid', async () => {
@@ -86,7 +86,7 @@ describe('Test register new user', () => {
       .expect(200);
     const user = response.body.user;
     const token = response.body.token;
-    const decodedToken = jwt.decode(token, config.get('jsonSecret'));
+    const decodedToken = jwt.decode(token, config.get('JWT_SECRET'));
 
     expect(decodedToken.user.uuid).toBe(user.uuid);
   });
