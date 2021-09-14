@@ -1,3 +1,1 @@
 ﻿# shopify-image-repo
-
-![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
