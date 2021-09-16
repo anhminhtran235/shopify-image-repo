@@ -34,11 +34,31 @@ const uploadBase64Image = (base64Image) => {
   return s3.upload(uploadParams).promise();
 };
 
+const deleteImages = (awsKeys) => {
+  if (awsKeys.length === 0) {
+    return;
+  }
+
+  const objects = awsKeys.map((awsKey) => ({
+    Key: awsKey,
+  }));
+
+  const deleteParams = {
+    Bucket: bucketName,
+    Delete: {
+      Objects: objects,
+    },
+  };
+
+  return s3.deleteObjects(deleteParams).promise();
+};
+
 const getCloudFrontUrl = (awsKey) => {
   return `https://${cloudFrontUrl}/${awsKey}`;
 };
 
 module.exports = {
   uploadBase64Image,
+  deleteImages,
   getCloudFrontUrl,
 };

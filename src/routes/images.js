@@ -5,7 +5,11 @@ const { check, validationResult } = require('express-validator');
 
 const { defaultExpressErrorHandler } = require('../util');
 const auth = require('../middleware/auth');
-const { uploadBase64Image, getCloudFrontUrl } = require('../S3/s3');
+const {
+  uploadBase64Image,
+  getCloudFrontUrl,
+  deleteImages,
+} = require('../S3/s3');
 
 // Get all images
 router.get('/', async (req, res) => {
@@ -51,27 +55,71 @@ router.post(
       });
 
       const cloudFrontUrl = getCloudFrontUrl(image.awsKey);
-      return res.json({ filename: image.filename, url: cloudFrontUrl });
+      return res.json({ url: cloudFrontUrl, ...image.toJSON() });
     } catch (error) {
       return defaultExpressErrorHandler(res, error);
     }
   }
 );
 
-// Delete images
-router.delete('/:uuid', async (req, res) => {
+// Delete multiple images
+router.delete('/', auth, async (req, res) => {
   try {
-    const { uuid } = req.params;
+    const { imageUUIDs } = req.body;
+    const { uuid: userUUID } = req.user;
 
-    const image = await Image.findOne({ where: { uuid } });
-    if (!image) {
-      return res
-        .status(400)
-        .json(`Image with uuid ${imageUUID} does not exist`);
-    }
+    const images = await Image.findAll({
+      where: { uuid: imageUUIDs },
+      include: 'user',
+    });
 
-    await image.destroy();
-    res.status(200).send();
+    const promiseList = [];
+    const awsKeysToDelete = [];
+    images.forEach((image) => {
+      const isImageOwnedByUser = image.user.uuid === userUUID;
+      if (isImageOwnedByUser) {
+        promiseList.push(image.destroy());
+        awsKeysToDelete.push(image.awsKey);
+      }
+    });
+    const results = await Promise.all(promiseList);
+    await deleteImages(awsKeysToDelete);
+
+    results.forEach((result) => {
+      delete result.dataValues.user;
+    });
+
+    res.status(200).json(results);
+  } catch (error) {
+    return defaultExpressErrorHandler(res, error);
+  }
+});
+
+// Delete all images
+router.delete('/all', auth, async (req, res) => {
+  try {
+    const { uuid: userUUID } = req.user;
+
+    const user = await User.findOne({
+      where: { uuid: userUUID },
+      include: 'images',
+    });
+    const images = user.images;
+
+    const promiseList = [];
+    const awsKeysToDelete = [];
+    images.forEach((image) => {
+      promiseList.push(image.destroy());
+      awsKeysToDelete.push(image.awsKey);
+    });
+    const results = await Promise.all(promiseList);
+    await deleteImages(awsKeysToDelete);
+
+    results.forEach((result) => {
+      delete result.dataValues.user;
+    });
+
+    res.status(200).json(results);
   } catch (error) {
     return defaultExpressErrorHandler(res, error);
   }
