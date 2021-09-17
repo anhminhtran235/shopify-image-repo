@@ -49,7 +49,7 @@ const GlobalStyles = createGlobalStyle`
         padding: 0;
         margin: 0;
         font-size: 20px;
-        background: var(--darker-grey);
+        background: var(--lighter-grey);
     }
 
     ul {

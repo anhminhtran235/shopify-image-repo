@@ -46,12 +46,16 @@ router.post(
       const { name, password } = req.body;
       const user = await User.findOne({ where: { name } });
       if (!user) {
-        return res.status(400).json({ message: 'Invalid credentials' });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Invalid credentials' }] });
       }
 
       const passwordMatches = await bcrypt.compare(password, user.password);
       if (!passwordMatches) {
-        return res.status(400).json({ message: 'Invalid credentials' });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Invalid credentials' }] });
       }
 
       const payload = {
@@ -96,7 +100,7 @@ router.post(
       if (await User.findOne({ where: { name } })) {
         return res
           .status(400)
-          .json({ message: `User with name ${name} already exists` });
+          .json({ errors: [{ msg: `User with name ${name} already exists` }] });
       }
 
       let user = {

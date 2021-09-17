@@ -6,3 +6,5 @@ export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 
 export const GET_ME_SUCCESS = 'GET_ME_SUCCESS';
 export const GET_ME_FAILURE = 'GET_ME_FAILURE';
+
+export const LOGOUT = 'LOGOUT';

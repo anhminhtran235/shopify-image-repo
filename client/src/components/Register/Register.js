@@ -1,18 +1,20 @@
 import alertify from 'alertifyjs';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
-import useForm from '../util/useForm';
-import { Form, FormPageStyle } from './styles/FormStyle';
-import { register } from '../redux/actions/auth';
+import useForm from '../../util/useForm';
+import { Form, FormPageStyle } from '../styles/FormStyle';
+import { register } from '../../redux/actions/auth';
 
-const Register = ({ register }) => {
+const Register = ({ register, isAuthenticated }) => {
   const { form, handleChange } = useForm({
     username: 'Anh Minh',
     password: '123456',
     confirmPassword: '123456',
   });
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) {
       alertify.error('Password must match');
@@ -23,7 +25,9 @@ const Register = ({ register }) => {
 
   const loading = false;
 
-  return (
+  return isAuthenticated ? (
+    <Redirect to='/' />
+  ) : (
     <FormPageStyle>
       <Form onSubmit={onSubmit}>
         <fieldset disabled={loading} aria-busy={loading}>
@@ -56,4 +60,10 @@ const Register = ({ register }) => {
   );
 };
 
-export default connect(null, { register })(Register);
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+  };
+};
+
+export default withRouter(connect(mapStateToProps, { register })(Register));

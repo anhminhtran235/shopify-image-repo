@@ -43,7 +43,9 @@ router.post(
 
       const user = await User.findOne({ where: { uuid } });
       if (!user) {
-        return res.status(400).json({ message: 'Your account does not exist' });
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Your account does not exist' }] });
       }
 
       const uploadResult = await uploadBase64Image(imageBase64);

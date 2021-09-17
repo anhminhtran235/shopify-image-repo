@@ -1,23 +1,27 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
-import useForm from '../util/useForm';
-import { Form, FormPageStyle } from './styles/FormStyle';
-import { login } from '../redux/actions/auth';
+import useForm from '../../util/useForm';
+import { Form, FormPageStyle } from '../styles/FormStyle';
+import { login } from '../../redux/actions/auth';
 
-const Login = ({ login }) => {
+const Login = ({ login, isAuthenticated }) => {
   const { form, handleChange } = useForm({
     username: 'Anh Minh',
     password: '123456',
   });
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     login({ name: form.username, password: form.password });
   };
 
   const loading = false;
 
-  return (
+  return isAuthenticated ? (
+    <Redirect to='/' />
+  ) : (
     <FormPageStyle>
       <Form onSubmit={onSubmit}>
         <fieldset disabled={loading} aria-busy={loading}>
@@ -43,4 +47,10 @@ const Login = ({ login }) => {
   );
 };
 
-export default connect(null, { login })(Login);
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+  };
+};
+
+export default withRouter(connect(mapStateToProps, { login })(Login));
