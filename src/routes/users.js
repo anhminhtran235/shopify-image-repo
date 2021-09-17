@@ -7,6 +7,18 @@ const jwt = require('jsonwebtoken');
 
 const { User, Image } = require('../models');
 const { defaultExpressErrorHandler } = require('../util');
+const auth = require('../middleware/auth');
+
+router.get('/me', auth, async (req, res) => {
+  try {
+    const { uuid } = req.user;
+    const user = await User.findOne({ where: { uuid } });
+
+    return res.json(user);
+  } catch (error) {
+    return defaultExpressErrorHandler(res, error);
+  }
+});
 
 router.get('/', async (req, res) => {
   try {
