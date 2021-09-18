@@ -5,6 +5,7 @@ export const ImageStyle = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
   box-shadow: 0 1px 2px rgb(0 0 0 / 40%);
   background: white;
   border-radius: 8px;
@@ -26,7 +27,7 @@ export const ImageStyle = styled.div`
 
     .image-inside-wrapper {
       max-width: 300px;
-      max-height: 250px;
+      height: 250px;
       display: flex;
       margin: auto;
       position: relative;
@@ -48,6 +49,17 @@ export const ImageStyle = styled.div`
 
   .username {
     margin-top: 10px;
+  }
+
+  .check-box {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transform: scale(1.5);
+
+    :hover {
+      cursor: pointer;
+    }
   }
 `;
 

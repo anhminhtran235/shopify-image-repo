@@ -39,7 +39,7 @@ export const Form = styled.form`
       width: 350px;
       border-radius: 5px;
       padding: 5px 15px;
-      border: 1px solid var(--darker-grey);
+      border: 1px solid var(--lighter-grey);
       :focus {
         outline: none;
         border: 1px solid var(--lighter-blue);

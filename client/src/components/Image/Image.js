@@ -15,7 +15,7 @@ const Image = ({ isMine, url, filename }) => {
         <div class='username'>
           <p>Uploaded by USER_NAME</p>
         </div>
-        {isMine && <input type='checkbox' />}
+        {true && <input type='checkbox' class='check-box' />}
       </ImageStyle>
     </Wrapper>
   );

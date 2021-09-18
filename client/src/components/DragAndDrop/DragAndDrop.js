@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import { toBase64 } from '../../util/util';
 import { uploadImage } from '../../redux/actions/images';
+import { DragAndDropStyle } from '../styles/DragAndDropStyle';
 
 const DragAndDrop = ({ children, uploadImage }) => {
   const onDrop = useCallback((acceptedImages) => {
@@ -22,14 +23,14 @@ const DragAndDrop = ({ children, uploadImage }) => {
   });
 
   return (
-    <div {...getRootProps()}>
+    <DragAndDropStyle isDragActive={isDragActive} {...getRootProps()}>
       <input {...getInputProps()} />
       {isDragActive ? (
         <p>Drop the files here ...</p>
       ) : (
-        <p>Drag 'n' drop some files here, or click to select files</p>
+        <p>Drop some files here, or click to select files</p>
       )}
-    </div>
+    </DragAndDropStyle>
   );
 };
 

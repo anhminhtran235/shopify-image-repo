@@ -9,7 +9,9 @@ const GlobalStyles = createGlobalStyle`
         --darker-blue: #005ce4;
         --darkest-blue: #0e2f5a;
 
-        --darker-grey: #e4ebf1;
+        --lighter-grey: #e4ebf1;
+        --darker-grey: #d0d6db;
+        --darkest-grey: #b5bbc0;
 
         --lighter-orange: #e05100;
         --darker-orange: #cc4b01;

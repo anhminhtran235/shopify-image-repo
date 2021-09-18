@@ -3,7 +3,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { useEffect } from 'react';
 
 import Image from '../Image/Image';
-import { HomeStyle, ImagesStyle } from '../styles/HomeStyle';
+import { HomeStyle, ImagesStyle, MenuStyle } from '../styles/HomeStyle';
 import DragAndDrop from '../DragAndDrop/DragAndDrop';
 
 import { fetchImages } from '../../redux/actions/images';
@@ -20,7 +20,9 @@ const Home = ({ images, fetchImages, user }) => {
 
   return (
     <HomeStyle>
-      {/* <DragAndDrop /> */}
+      <MenuStyle>
+        <DragAndDrop />
+      </MenuStyle>
       <ImagesStyle>
         <InfiniteScroll
           dataLength={images.length}
