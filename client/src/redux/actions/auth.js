@@ -32,7 +32,7 @@ export const register =
         payload: res.data,
       });
     } catch (error) {
-      handleErrors(error.response.data.errors);
+      handleErrors(error);
 
       dispatch({
         type: REGISTER_FAILURE,
@@ -60,7 +60,7 @@ export const login =
         payload: res.data,
       });
     } catch (error) {
-      handleErrors(error.response.data.errors);
+      handleErrors(error);
 
       dispatch({
         type: LOGIN_FAILURE,

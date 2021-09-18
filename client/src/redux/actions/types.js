@@ -8,3 +8,6 @@ export const GET_ME_SUCCESS = 'GET_ME_SUCCESS';
 export const GET_ME_FAILURE = 'GET_ME_FAILURE';
 
 export const LOGOUT = 'LOGOUT';
+
+export const FETCH_IMAGES_SUCCESS = 'FETCH_IMAGES_SUCCESS';
+export const FETCH_IMAGES_FAILURE = 'FETCH_IMAGES_FAILURE';
