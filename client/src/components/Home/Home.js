@@ -7,6 +7,7 @@ import { HomeStyle, ImagesStyle, MenuStyle } from '../styles/HomeStyle';
 import DragAndDrop from '../DragAndDrop/DragAndDrop';
 
 import { fetchImages } from '../../redux/actions/images';
+import UploadingProgress from '../UploadingProgress/UploadingProgress';
 
 const Home = ({ images, fetchImages, user }) => {
   useEffect(() => {
@@ -41,6 +42,7 @@ const Home = ({ images, fetchImages, user }) => {
           })}
         </InfiniteScroll>
       </ImagesStyle>
+      <UploadingProgress />
     </HomeStyle>
   );
 };
