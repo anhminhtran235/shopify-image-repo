@@ -1,15 +1,15 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 import useForm from '../../util/useForm';
 import { Form, FormPageStyle } from '../styles/FormStyle';
 import { login } from '../../redux/actions/auth';
 
-const Login = ({ login, isAuthenticated }) => {
+const Login = ({ login, isAuthenticated, loading }) => {
   const { form, handleChange } = useForm({
-    username: 'Anh Minh',
-    password: '123456',
+    username: '',
+    password: '',
   });
 
   const onSubmit = async (e) => {
@@ -17,15 +17,16 @@ const Login = ({ login, isAuthenticated }) => {
     login({ name: form.username, password: form.password });
   };
 
-  const loading = false;
-
   return isAuthenticated ? (
     <Redirect to='/' />
   ) : (
     <FormPageStyle>
       <Form onSubmit={onSubmit}>
         <fieldset disabled={loading} aria-busy={loading}>
-          <h2>Login to your account</h2>
+          <h2>Login </h2>
+          <p class='info'>
+            You can use this testing account or create your own
+          </p>
           <input
             type='text'
             placeholder='Username'
@@ -41,6 +42,9 @@ const Login = ({ login, isAuthenticated }) => {
             onChange={handleChange}
           />
           <button type='submit'>Login</button>
+          <p>
+            New to this website? <Link to='/register'>Register here</Link>
+          </p>
         </fieldset>
       </Form>
     </FormPageStyle>
@@ -50,6 +54,7 @@ const Login = ({ login, isAuthenticated }) => {
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.isAuthenticated,
+    loading: state.auth.loading,
   };
 };
 

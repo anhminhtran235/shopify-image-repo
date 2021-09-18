@@ -9,6 +9,8 @@ import {
   GET_ME_SUCCESS,
   GET_ME_FAILURE,
   LOGOUT,
+  REGISTER_IN_PROGRESS,
+  LOGIN_IN_PROGRESS,
 } from '../actions/types';
 import { handleErrors } from '../../util/ErrorHandler';
 
@@ -24,6 +26,7 @@ export const register =
     const body = JSON.stringify({ name, password });
 
     try {
+      dispatch({ type: REGISTER_IN_PROGRESS });
       const res = await axios.post('users/register', body, config);
       alertify.success('Register successfully');
 
@@ -52,6 +55,7 @@ export const login =
     const body = JSON.stringify({ name, password });
 
     try {
+      dispatch({ type: LOGIN_IN_PROGRESS });
       const res = await axios.post('users/login', body, config);
       alertify.success('Login successfully');
 

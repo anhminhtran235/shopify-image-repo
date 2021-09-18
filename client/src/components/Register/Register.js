@@ -1,17 +1,17 @@
 import alertify from 'alertifyjs';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 import useForm from '../../util/useForm';
 import { Form, FormPageStyle } from '../styles/FormStyle';
 import { register } from '../../redux/actions/auth';
 
-const Register = ({ register, isAuthenticated }) => {
+const Register = ({ register, isAuthenticated, loading }) => {
   const { form, handleChange } = useForm({
-    username: 'Anh Minh',
-    password: '123456',
-    confirmPassword: '123456',
+    username: '',
+    password: '',
+    confirmPassword: '',
   });
 
   const onSubmit = async (e) => {
@@ -22,8 +22,6 @@ const Register = ({ register, isAuthenticated }) => {
       register({ name: form.username, password: form.password });
     }
   };
-
-  const loading = false;
 
   return isAuthenticated ? (
     <Redirect to='/' />
@@ -54,6 +52,9 @@ const Register = ({ register, isAuthenticated }) => {
             onChange={handleChange}
           />
           <button type='submit'>Sign up</button>
+          <p>
+            Already have an account? <Link to='/login'>Login here</Link>
+          </p>
         </fieldset>
       </Form>
     </FormPageStyle>
@@ -63,6 +64,7 @@ const Register = ({ register, isAuthenticated }) => {
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.isAuthenticated,
+    loading: state.auth.loading,
   };
 };
 

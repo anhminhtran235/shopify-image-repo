@@ -29,7 +29,7 @@ export const NavLink = styled.a`
   margin-left: 20px;
   :hover {
     cursor: pointer;
-    color: var(--lighter-blue);
+    color: var(--darker-blue);
     text-decoration: none;
   }
 `;

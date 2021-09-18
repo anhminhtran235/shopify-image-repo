@@ -6,6 +6,8 @@ import {
   GET_ME_SUCCESS,
   GET_ME_FAILURE,
   LOGOUT,
+  LOGIN_IN_PROGRESS,
+  REGISTER_IN_PROGRESS,
 } from '../actions/types';
 
 const initialState = {
@@ -29,6 +31,7 @@ export default function (state = initialState, action) {
         isAuthenticated: true,
         loading: false,
       };
+
     case REGISTER_FAILURE:
     case LOGIN_FAILURE:
     case GET_ME_FAILURE:
@@ -39,6 +42,13 @@ export default function (state = initialState, action) {
         token: null,
         isAuthenticated: false,
         loading: false,
+      };
+
+    case LOGIN_IN_PROGRESS:
+    case REGISTER_IN_PROGRESS:
+      return {
+        ...state,
+        loading: true,
       };
 
     default:

@@ -4,7 +4,7 @@ export const FormPageStyle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  background: var(--lighter-grey);
 `;
 
 const loading = keyframes`
@@ -20,6 +20,7 @@ const loading = keyframes`
 `;
 
 export const Form = styled.form`
+  background: white;
   fieldset {
     display: flex;
     flex-direction: column;
@@ -30,19 +31,20 @@ export const Form = styled.form`
     margin-top: 100px;
     margin-bottom: 20px;
     border-radius: 8px;
+
     h2 {
       font-weight: bold;
     }
     input {
       margin-top: 10px;
-      font-size: 20px;
+      font-size: 16px;
       width: 350px;
       border-radius: 5px;
-      padding: 5px 15px;
-      border: 1px solid var(--lighter-grey);
+      padding: 5px 10px;
+      border: 1px solid var(--darker-grey);
       :focus {
         outline: none;
-        border: 1px solid var(--lighter-blue);
+        border: 1px solid var(--darker-blue);
       }
     }
 
@@ -76,9 +78,9 @@ export const Form = styled.form`
       display: block;
       background-image: linear-gradient(
         to right,
-        #24b6c8 0%,
-        #ffffff 50%,
-        #24b6c8 100%
+        var(--lighter-blue) 0%,
+        white 50%,
+        var(--lighter-blue) 100%
       );
     }
     &[aria-busy='true']::before {
