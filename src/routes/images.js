@@ -11,12 +11,22 @@ const {
   deleteImages,
 } = require('../S3/s3');
 
-// Get all images
+// Get images with pagination
 router.get('/', async (req, res) => {
   try {
-    const images = await Image.findAll({
-      include: 'user',
-    });
+    const { offset, limit } = req.query;
+
+    const option = { include: 'user', order: [['createdAt', 'DESC']] };
+    if (offset) {
+      option.offset = +offset;
+    }
+    if (limit) {
+      option.limit = +limit;
+    }
+
+    console.log(option);
+
+    const images = await Image.findAll(option);
     return res.json(images);
   } catch (error) {
     return defaultExpressErrorHandler(res, error);
