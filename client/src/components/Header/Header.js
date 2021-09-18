@@ -1,12 +1,19 @@
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { NavbarStyle, NavLink, NavLinksContainer } from '../styles/NavbarStyle';
+import {
+  Logo,
+  HeaderStyle,
+  NavLink,
+  NavLinksContainer,
+} from '../styles/HeaderStyle';
 import LogoutButton from './LogoutButton';
 
-const Navbar = ({ isAuthenticated }) => {
+const Header = ({ isAuthenticated }) => {
   return (
-    <NavbarStyle>
+    <HeaderStyle>
+      <Logo>Image Repo</Logo>
+
       <NavLinksContainer>
         <NavLink as={Link} to='/'>
           Home
@@ -26,7 +33,7 @@ const Navbar = ({ isAuthenticated }) => {
 
         {isAuthenticated && <LogoutButton />}
       </NavLinksContainer>
-    </NavbarStyle>
+    </HeaderStyle>
   );
 };
 
@@ -36,4 +43,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Navbar);
+export default connect(mapStateToProps)(Header);

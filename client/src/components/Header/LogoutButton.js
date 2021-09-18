@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
 import { logout } from '../../redux/actions/auth';
-import { NavLink } from '../styles/NavbarStyle';
+import { NavLink } from '../styles/HeaderStyle';
 
 const LogoutButton = ({ logout }) => {
   const onClick = () => {

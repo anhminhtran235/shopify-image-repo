@@ -1,17 +1,23 @@
-import { ImageStyle } from '../styles/ImageStyle';
+import { ImageStyle, Wrapper } from '../styles/ImageStyle';
 
 const Image = ({ isMine, url, filename }) => {
   return (
-    <ImageStyle>
-      <div>
-        <img src={url} alt={filename} />
-      </div>
-      <div>
-        <p>{filename}</p>
-        <a href={url}>Open</a>
-        {isMine ? 'IsMine' : ''}
-      </div>
-    </ImageStyle>
+    <Wrapper>
+      <ImageStyle>
+        <div class='image-outside-wrapper'>
+          <div class='image-inside-wrapper'>
+            <img src={url} alt={filename} />
+          </div>
+        </div>
+        <div class='filename'>
+          <p>{filename}</p>
+        </div>
+        <div class='username'>
+          <p>Uploaded by USER_NAME</p>
+        </div>
+        {isMine && <input type='checkbox' />}
+      </ImageStyle>
+    </Wrapper>
   );
 };
 

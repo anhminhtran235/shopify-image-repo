@@ -5,13 +5,11 @@ const GlobalStyles = createGlobalStyle`
     @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
 
     html {
-        --lighter-blue: #24b6c8;
-        --darker-blue: #26aec0;
-        --darkest-blue: #22a0b1;
+        --lighter-blue: #8EE8FF;
+        --darker-blue: #005ce4;
+        --darkest-blue: #0e2f5a;
 
-        --lighter-grey: #f4f7f9;
-        --darker-grey: #dbdbdb;
-        --darkest-grey: #acacac;
+        --darker-grey: #e4ebf1;
 
         --lighter-orange: #e05100;
         --darker-orange: #cc4b01;
@@ -20,20 +18,6 @@ const GlobalStyles = createGlobalStyle`
         --lighter-black: #2d3e50;
         --darker-black: #222222;
         --darkest-black: #161616;
-
-        --container-padding: 120px;
-        @media (max-width: 1300px) {
-            --container-padding: 60px;
-        }
-        @media (max-width: 1015px) {
-            --container-padding: 40px;
-        }
-        @media (max-width: 927px) {
-            --container-padding: 20px;
-        }
-        @media (max-width: 500px) {
-            --container-padding: 10px;
-        }
 
         box-sizing: border-box;
     }
@@ -49,7 +33,6 @@ const GlobalStyles = createGlobalStyle`
         padding: 0;
         margin: 0;
         font-size: 20px;
-        background: var(--lighter-grey);
     }
 
     ul {
@@ -59,7 +42,7 @@ const GlobalStyles = createGlobalStyle`
 
     a {
         text-decoration: none;
-        color: var(---darker-black);
+        color: white
     }
 
     a:hover {

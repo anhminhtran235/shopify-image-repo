@@ -13,7 +13,7 @@ import PrivateRoute from './components/Route/PrivateRoute';
 import Secret from './components/Secret';
 import { useEffect } from 'react';
 import { getMe } from './redux/actions/auth';
-import Navbar from './components/Navbar/Navbar';
+import Header from './components/Header/Header';
 
 const App = () => {
   useEffect(() => {
@@ -24,7 +24,7 @@ const App = () => {
     <Provider store={store}>
       <GlobalStyles />
       <BrowserRouter>
-        <Navbar />
+        <Header />
 
         <Switch>
           <Route exact path='/' component={Home}></Route>
