@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 
 import { Dropdown, DropdownItem, SearchBar } from '../styles/SearchStyle';
 import { useDebouncedCallback, boldIfMatch } from '../../util/util';
-import { getLabels, setCurrentLabel } from '../../redux/actions/search';
+import { getLabels, setTempLabel } from '../../redux/actions/search';
 
-const FancySearchBox = ({ searchLabels, getLabels, setCurrentLabel }) => {
+const FancySearchBox = ({ searchLabels, getLabels, setTempLabel }) => {
   const [input, setInput] = useState({ value: '' });
 
   const findItemsDebounced = useDebouncedCallback(getLabels, 350);
@@ -23,10 +23,11 @@ const FancySearchBox = ({ searchLabels, getLabels, setCurrentLabel }) => {
     items: searchLabels,
     onInputValueChange({ inputValue }) {
       setInput({ value: inputValue });
+      setTempLabel(inputValue);
       findItemsDebounced(inputValue);
     },
     onSelectedItemChange({ selectedItem }) {
-      setCurrentLabel(selectedItem);
+      setTempLabel(selectedItem);
     },
     itemToString: (label) => label,
   });
@@ -49,7 +50,7 @@ const FancySearchBox = ({ searchLabels, getLabels, setCurrentLabel }) => {
               {...getItemProps({ item: label })}
               active={index === highlightedIndex}
               onClick={() => {
-                setCurrentLabel(label);
+                setTempLabel(label);
               }}
             >
               {boldIfMatch(label, input.value)}
@@ -69,6 +70,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { getLabels, setCurrentLabel })(
+export default connect(mapStateToProps, { getLabels, setTempLabel })(
   FancySearchBox
 );

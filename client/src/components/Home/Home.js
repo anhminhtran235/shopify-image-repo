@@ -12,6 +12,7 @@ import {
   deleteImages,
   deleteAllMyImages,
 } from '../../redux/actions/images';
+import { executeNewSearch } from '../../redux/actions/search';
 import UploadingProgress from '../UploadingProgress/UploadingProgress';
 import NormalSearchBox from '../Search/NormalSearchBox';
 
@@ -22,6 +23,9 @@ const Home = ({
   isAuthenticated,
   deleteImages,
   deleteAllMyImages,
+  currentSearchText,
+  currentLabel,
+  executeNewSearch,
 }) => {
   useEffect(() => {
     fetchMoreImages();
@@ -29,7 +33,7 @@ const Home = ({
 
   const fetchMoreImages = () => {
     const offset = images.length;
-    fetchImages(offset, 10);
+    fetchImages(offset, 10, currentSearchText, currentLabel);
   };
 
   const onDeleteImages = () => {
@@ -52,11 +56,13 @@ const Home = ({
       {isAuthenticated ? (
         <MenuStyle>
           <DragAndDrop />
-          <div class='option'>
+          <div className='option'>
             <NormalSearchBox />
             <FancySearchBox />
             <div className='btn-group'>
-              <button className='search-btn'>Search</button>
+              <button className='search-btn' onClick={executeNewSearch}>
+                Search
+              </button>
               <button className='btn' onClick={onDeleteAllImages}>
                 Delete ALL of my images
               </button>
@@ -102,6 +108,8 @@ const mapStateToProps = (state) => {
     images: state.images.images,
     user: state.auth.user,
     isAuthenticated: state.auth.isAuthenticated,
+    currentSearchText: state.search.currentSearchText,
+    currentLabel: state.search.currentLabel,
   };
 };
 
@@ -109,4 +117,5 @@ export default connect(mapStateToProps, {
   fetchImages,
   deleteImages,
   deleteAllMyImages,
+  executeNewSearch,
 })(Home);

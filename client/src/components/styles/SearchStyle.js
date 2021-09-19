@@ -44,6 +44,8 @@ export const Dropdown = styled.div`
   top: 39px;
   box-shadow: 0px 3px 5px 0 rgb(0 0 0 / 30%);
   font-size: 16px;
+  max-height: 400px;
+  overflow-y: auto;
 `;
 
 export const DropdownItem = styled.div`

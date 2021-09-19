@@ -1,11 +1,14 @@
 import {
   GET_LABEL_SUCCESS,
-  SET_CURRENT_LABEL,
-  SET_CURRENT_SEARCH_TEXT,
+  SET_TEMP_LABEL,
+  SET_TEMP_SEARCH_TEXT,
+  SYNC_SEARCH_QUERY,
 } from '../actions/types';
 
 const initialState = {
   searchLabels: [],
+  tempLabel: '',
+  tempSearchText: '',
   currentLabel: '',
   currentSearchText: '',
 };
@@ -20,16 +23,23 @@ export default function (state = initialState, action) {
         searchLabels: payload,
       };
 
-    case SET_CURRENT_LABEL:
+    case SET_TEMP_LABEL:
       return {
         ...state,
-        currentLabel: payload,
+        tempLabel: payload,
       };
 
-    case SET_CURRENT_SEARCH_TEXT:
+    case SET_TEMP_SEARCH_TEXT:
       return {
         ...state,
-        currentSearchText: payload,
+        tempSearchText: payload,
+      };
+
+    case SYNC_SEARCH_QUERY:
+      return {
+        ...state,
+        currentSearchText: state.tempSearchText,
+        currentLabel: state.tempLabel,
       };
 
     default:

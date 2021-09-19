@@ -1,16 +1,16 @@
 import { SearchBar } from '../styles/SearchStyle';
 import { connect } from 'react-redux';
 
-import { setCurrentSearchText } from '../../redux/actions/search';
+import { setTempSearchText } from '../../redux/actions/search';
 
-const NormalSearchBox = ({ currentSearchText, setCurrentSearchText }) => {
+const NormalSearchBox = ({ tempSearchText, setTempSearchText }) => {
   return (
     <SearchBar>
       <input
         type='text'
         placeholder='Username, filename'
-        value={currentSearchText}
-        onChange={(e) => setCurrentSearchText(e.target.value)}
+        value={tempSearchText}
+        onChange={(e) => setTempSearchText(e.target.value)}
       />
     </SearchBar>
   );
@@ -18,10 +18,8 @@ const NormalSearchBox = ({ currentSearchText, setCurrentSearchText }) => {
 
 const mapStateToProps = (state) => {
   return {
-    currentSearchText: state.search.currentSearchText,
+    tempSearchText: state.search.tempSearchText,
   };
 };
 
-export default connect(mapStateToProps, { setCurrentSearchText })(
-  NormalSearchBox
-);
+export default connect(mapStateToProps, { setTempSearchText })(NormalSearchBox);

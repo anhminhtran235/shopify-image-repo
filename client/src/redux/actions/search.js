@@ -1,10 +1,14 @@
 import axios from 'axios';
 import {
+  CLEAR_IMAGES,
   GET_LABEL_SUCCESS,
-  SET_CURRENT_LABEL,
-  SET_CURRENT_SEARCH_TEXT,
+  SET_SHOW_LOADER,
+  SET_TEMP_LABEL,
+  SET_TEMP_SEARCH_TEXT,
+  SYNC_SEARCH_QUERY,
 } from './types';
 import { handleErrors } from '../../util/ErrorHandler';
+import { fetchImages } from './images';
 
 export const getLabels = (labelName) => async (dispatch) => {
   const config = {
@@ -24,16 +28,35 @@ export const getLabels = (labelName) => async (dispatch) => {
   }
 };
 
-export const setCurrentLabel = (labelName) => (dispatch) => {
+export const setTempLabel = (labelName) => (dispatch) => {
   dispatch({
-    type: SET_CURRENT_LABEL,
+    type: SET_TEMP_LABEL,
     payload: labelName,
   });
 };
 
-export const setCurrentSearchText = (searchText) => (dispatch) => {
+export const setTempSearchText = (searchText) => (dispatch) => {
   dispatch({
-    type: SET_CURRENT_SEARCH_TEXT,
+    type: SET_TEMP_SEARCH_TEXT,
     payload: searchText,
   });
+};
+
+export const executeNewSearch = () => async (dispatch, getState) => {
+  dispatch({
+    type: SYNC_SEARCH_QUERY,
+  });
+
+  dispatch({
+    type: CLEAR_IMAGES,
+  });
+
+  dispatch({ type: SET_SHOW_LOADER, payload: true });
+  await fetchImages(
+    0,
+    10,
+    getState().search.currentSearchText,
+    getState().search.currentLabel
+  )(dispatch);
+  dispatch({ type: SET_SHOW_LOADER, payload: false });
 };

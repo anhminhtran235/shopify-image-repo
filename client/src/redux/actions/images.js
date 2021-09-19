@@ -13,22 +13,25 @@ import {
 import { handleErrors } from '../../util/ErrorHandler';
 import alertify from 'alertifyjs';
 
-export const fetchImages = (offset, limit) => async (dispatch) => {
-  try {
-    const res = await axios.get(`images?offset=${offset}&limit=${limit}`);
+export const fetchImages =
+  (offset, limit, searchText, label) => async (dispatch) => {
+    try {
+      const res = await axios.get(
+        `images?offset=${offset}&limit=${limit}&searchText=${searchText}&label=${label}`
+      );
 
-    dispatch({
-      type: FETCH_IMAGES_SUCCESS,
-      payload: res.data,
-    });
-  } catch (error) {
-    console.log(error);
-    handleErrors(error);
-    dispatch({
-      type: FETCH_IMAGES_FAILURE,
-    });
-  }
-};
+      dispatch({
+        type: FETCH_IMAGES_SUCCESS,
+        payload: res.data,
+      });
+    } catch (error) {
+      console.log(error);
+      handleErrors(error);
+      dispatch({
+        type: FETCH_IMAGES_FAILURE,
+      });
+    }
+  };
 
 export const requestUploadImages = (images) => (dispatch) => {
   dispatch({ type: UPLOAD_IMAGES_REQUEST, payload: images });

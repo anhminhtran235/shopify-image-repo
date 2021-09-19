@@ -11,6 +11,7 @@ import {
   UPLOAD_IMAGE_FAILURE,
   SET_SELECT_IMAGE,
   DELETE_IMAGES_SUCCESS,
+  CLEAR_IMAGES,
 } from '../actions/types';
 
 const initialState = {
@@ -92,6 +93,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         images: imagesAfterDelete,
+      };
+
+    case CLEAR_IMAGES:
+      return {
+        ...state,
+        images: [],
       };
     default:
       return state;
