@@ -4,10 +4,13 @@ import {
   FETCH_IMAGES_FAILURE,
   FETCH_IMAGES_SUCCESS,
   SET_SELECT_IMAGE,
+  SET_SHOW_LOADER,
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGE_FAILURE,
   UPLOAD_IMAGE_SUCCESS,
 } from './types';
+import { setShowLoader } from './ui';
+
 import { handleErrors } from '../../util/ErrorHandler';
 import alertify from 'alertifyjs';
 
@@ -81,13 +84,16 @@ export const deleteImages = (imageUUIDs) => async (dispatch) => {
   };
 
   try {
+    dispatch({ type: SET_SHOW_LOADER, payload: true });
     const res = await axios.delete('images', config);
+    dispatch({ type: SET_SHOW_LOADER, payload: false });
     alertify.success('Successfully deleted ' + res.data.length + ' images ');
     dispatch({
       type: DELETE_IMAGES_SUCCESS,
       payload: res.data,
     });
   } catch (error) {
+    dispatch({ type: SET_SHOW_LOADER, payload: false });
     handleErrors(error);
   }
 };
@@ -102,13 +108,16 @@ export const deleteAllMyImages = (userUUID) => async (dispatch) => {
   };
 
   try {
+    dispatch({ type: SET_SHOW_LOADER, payload: true });
     const res = await axios.delete('images/all', config);
+    dispatch({ type: SET_SHOW_LOADER, payload: false });
     alertify.success('Successfully deleted ' + res.data.length + ' images ');
     dispatch({
       type: DELETE_IMAGES_SUCCESS,
       payload: res.data,
     });
   } catch (error) {
+    dispatch({ type: SET_SHOW_LOADER, payload: false });
     handleErrors(error);
   }
 };

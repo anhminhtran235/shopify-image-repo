@@ -3,6 +3,7 @@ import {
   UPLOADING_ERROR,
   UPLOADING_IN_PROGRESS,
 } from '../../util/enum';
+import { shortenFileName } from '../../util/util';
 import MiniSpinner from '../Loader/MiniSpinner';
 import { ImageProgressStyle } from '../styles/UploadingProgressStyle';
 
@@ -11,7 +12,7 @@ const ImageProgress = ({ filename, status }) => {
   const isCompleted = status === UPLOADING_DONE;
   const hasError = status === UPLOADING_ERROR;
 
-  const name = filename.substring(0, filename.lastIndexOf('.') + 1);
+  const shortenedName = shortenFileName(filename);
   const extension = filename.substring(
     filename.lastIndexOf('.') + 1,
     filename.length
@@ -21,7 +22,7 @@ const ImageProgress = ({ filename, status }) => {
     <ImageProgressStyle>
       <div className='meta-data'>
         <div className='img-extension'>{extension}</div>
-        <div className='img-name'>{name}</div>
+        <div className='img-name'>{shortenedName}</div>
       </div>
       <div className='status'>
         {isInProgress && <MiniSpinner />}

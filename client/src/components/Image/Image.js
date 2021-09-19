@@ -2,11 +2,14 @@ import { connect } from 'react-redux';
 
 import { ImageStyle, OutsideWrapper, Wrapper } from '../styles/ImageStyle';
 import { setSelectImage } from '../../redux/actions/images';
+import { shortenFileName } from '../../util/util';
 
-const Image = ({ uuid, isMine, url, filename, setSelectImage }) => {
+const Image = ({ uuid, isMine, url, filename, ownerName, setSelectImage }) => {
   const openImage = () => {
     window.open(url, '_blank').focus();
   };
+
+  const shortenedFileName = shortenFileName(filename);
 
   const handleClickCheckbox = (e) => {
     const isSelected = e.target.checked;
@@ -23,10 +26,10 @@ const Image = ({ uuid, isMine, url, filename, setSelectImage }) => {
             </div>
           </div>
           <div className='filename'>
-            <p>{filename}</p>
+            <p>{shortenedFileName}</p>
           </div>
           <div className='username'>
-            <p>Uploaded by USER_NAME</p>
+            <p>Uploaded by {ownerName}</p>
           </div>
         </ImageStyle>
         {isMine && (

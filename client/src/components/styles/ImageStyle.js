@@ -29,6 +29,7 @@ export const ImageStyle = styled.div`
   font-size: 16px;
   padding: 20px 10px;
   transition: 0.2s;
+  text-align: center;
 
   :hover {
     transition: 0.2s;

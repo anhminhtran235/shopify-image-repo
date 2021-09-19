@@ -79,6 +79,7 @@ const Home = ({
                 isMine={isMine}
                 url={image.url}
                 filename={image.filename}
+                ownerName={image.user.name}
               />
             );
           })}

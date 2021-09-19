@@ -11,6 +11,15 @@ export const UploadingProgressStyle = styled.div`
   max-height: 500px;
   box-shadow: 0 0 1px 1px var(--lighter-black);
   overflow-y: auto;
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 `;
 
 export const ImageProgressHeader = styled.div`
@@ -50,6 +59,7 @@ export const ImageProgressStyle = styled.div`
   }
 
   .status {
+    margin-left: 15px;
     i {
       color: green;
     }

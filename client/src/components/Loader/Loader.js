@@ -20,7 +20,7 @@ const LoaderStyle = styled.div`
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #24b6c8;
+    background: var(--lighter-blue);
     margin: -4px 0 0 -4px;
   }
   div:nth-child(1) {
@@ -89,9 +89,18 @@ const LoaderStyle = styled.div`
   }
 `;
 
+const Modal = styled.div`
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  background: var(--darker-grey);
+  opacity: 70%;
+  z-index: 100;
+`;
+
 const Loader = () => {
   return (
-    <>
+    <Modal>
       <LoaderStyle>
         <div></div>
         <div></div>
@@ -102,7 +111,7 @@ const Loader = () => {
         <div></div>
         <div></div>
       </LoaderStyle>
-    </>
+    </Modal>
   );
 };
 
