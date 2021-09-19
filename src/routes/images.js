@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
       limit = 10000000000000;
     }
 
-    let queryString = `SELECT \`Image\`.\`uuid\` as uuid,
+    let queryString = `SELECT DISTINCT \`Image\`.\`uuid\` as uuid,
                                 \`Image\`.\`filename\` as filename,
                                 \`Image\`.\`awskey\` as awsKey,
                                 \`Image\`.\`createdat\` as createdAt,
@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
     }
 
     queryString += ` ORDER  BY \`Image\`.\`createdat\` DESC
-    LIMIT  ${offset}, 10000000000000;`;
+    LIMIT ${limit} OFFSET ${offset}`;
 
     const images = await sequelize.query(queryString, {
       type: QueryTypes.SELECT,
