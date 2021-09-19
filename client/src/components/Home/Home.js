@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import Image from '../Image/Image';
 import { HomeStyle, ImagesStyle, MenuStyle } from '../styles/HomeStyle';
 import DragAndDrop from '../DragAndDrop/DragAndDrop';
+import Search from '../Search/Search';
 
 import {
   fetchImages,
@@ -50,15 +51,18 @@ const Home = ({
       {isAuthenticated ? (
         <MenuStyle>
           <DragAndDrop />
-          <div className='btn-group'>
-            <button className='btn' onClick={onDeleteAllImages}>
-              Delete ALL of my images
-            </button>
-            {selectedImagesCount > 0 && (
-              <button className='btn' onClick={onDeleteImages}>
-                Delete {selectedImagesCount} images
+          <div class='option'>
+            <Search />
+            <div className='btn-group'>
+              <button className='btn' onClick={onDeleteAllImages}>
+                Delete ALL of my images
               </button>
-            )}
+              {selectedImagesCount > 0 && (
+                <button className='btn' onClick={onDeleteImages}>
+                  Delete {selectedImagesCount} images
+                </button>
+              )}
+            </div>
           </div>
         </MenuStyle>
       ) : (

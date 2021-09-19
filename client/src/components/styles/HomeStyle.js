@@ -12,24 +12,30 @@ export const MenuStyle = styled.div`
   justify-content: space-between;
   align-items: center;
 
-  .btn-group {
+  .option {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
-    .btn:first-child {
-      margin-bottom: 10px;
-    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
 
-    .btn {
-      font-size: 16px;
-      padding: 10px 20px;
-      color: white;
-      background: var(--lighter-red);
-      border: 1px solid red;
-      border-radius: 8px;
-      :hover {
-        cursor: pointer;
-        background: var(--darker-red);
+      .btn:first-child {
+        margin-bottom: 10px;
+      }
+
+      .btn {
+        font-size: 16px;
+        padding: 10px 20px;
+        color: white;
+        background: var(--lighter-red);
+        border: 1px solid red;
+        border-radius: 8px;
+        :hover {
+          cursor: pointer;
+          background: var(--darker-red);
+        }
       }
     }
   }
