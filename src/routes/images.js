@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User, Image } = require('../models');
+const { User, Image, Label } = require('../models');
 const { check, validationResult } = require('express-validator');
 
 const { defaultExpressErrorHandler } = require('../util');
@@ -10,6 +10,8 @@ const {
   getCloudFrontUrl,
   deleteImages,
 } = require('../S3/s3');
+
+const { detectLabels } = require('../AmazonRecoknition/AmazonRecoknition');
 
 // Get images with pagination
 router.get('/', async (req, res) => {
@@ -64,6 +66,24 @@ router.post(
         awsKey: uploadResult.Key,
         userId: user.id,
       });
+
+      const result = await detectLabels(uploadResult.Key);
+      const labelNames = result.Labels.map((label) => label.Name);
+      const existingLabels = await Label.findAll({
+        where: { name: labelNames },
+      });
+      const existingLabelNames = existingLabels.map((label) => label.name);
+      const newLabelNames = labelNames.filter(
+        (labelName) => !existingLabelNames.includes(labelName)
+      );
+      const newLabels = await Label.bulkCreate(
+        newLabelNames.map((labelName) => ({ name: labelName }))
+      );
+
+      const allLabels = [...existingLabels, newLabels];
+      for (let i = 0; i < allLabels.length; i++) {
+        await image.addLabel(allLabels[i]);
+      }
 
       const cloudFrontUrl = getCloudFrontUrl(image.awsKey);
       return res.json({ url: cloudFrontUrl, tempUUID, ...image.toJSON() });

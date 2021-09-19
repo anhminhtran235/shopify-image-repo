@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, DataTypes) => {
-    await queryInterface.createTable('images', {
+    await queryInterface.createTable('labels', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,19 +13,10 @@ module.exports = {
         allowNull: false,
         defaultValue: DataTypes.UUIDV4,
       },
-      filename: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
-      userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: { model: 'users', key: 'id' },
-        onDelete: 'CASCADE',
-      },
-      awsKey: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        unique: true,
       },
       createdAt: {
         allowNull: false,
@@ -38,6 +29,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('images');
+    await queryInterface.dropTable('labels');
   },
 };

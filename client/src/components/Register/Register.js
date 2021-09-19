@@ -9,9 +9,9 @@ import { register } from '../../redux/actions/auth';
 
 const Register = ({ register, isAuthenticated, loading }) => {
   const { form, handleChange } = useForm({
-    username: '',
-    password: '',
-    confirmPassword: '',
+    username: 'minh123',
+    password: '123456',
+    confirmPassword: '123456',
   });
 
   const onSubmit = async (e) => {
