@@ -168,6 +168,11 @@ router.delete('/', auth, async (req, res) => {
     const results = await Promise.all(promiseList);
     await deleteImages(awsKeysToDelete);
 
+    const queryString = `DELETE l from labels l left join image_label il on l.id = il.labelId where il.labelId is null`;
+    await sequelize.query(queryString, {
+      type: QueryTypes.DELETE,
+    });
+
     results.forEach((result) => {
       delete result.dataValues.user;
     });
@@ -197,6 +202,11 @@ router.delete('/all', auth, async (req, res) => {
     });
     const results = await Promise.all(promiseList);
     await deleteImages(awsKeysToDelete);
+
+    const queryString = `DELETE l from labels l left join image_label il on l.id = il.labelId where il.labelId is null`;
+    await sequelize.query(queryString, {
+      type: QueryTypes.DELETE,
+    });
 
     results.forEach((result) => {
       delete result.dataValues.user;
