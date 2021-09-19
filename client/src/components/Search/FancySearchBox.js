@@ -3,11 +3,10 @@ import { resetIdCounter, useCombobox } from 'downshift';
 import { connect } from 'react-redux';
 
 import { Dropdown, DropdownItem, SearchBar } from '../styles/SearchStyle';
-import { useDebouncedCallback } from '../../util/util';
-import { getLabels, setCurrentLabel } from '.././../redux/actions/search';
+import { useDebouncedCallback, boldIfMatch } from '../../util/util';
+import { getLabels, setCurrentLabel } from '../../redux/actions/search';
 
-const Search = ({ searchLabels, getLabels, setCurrentLabel }) => {
-  console.log(searchLabels);
+const FancySearchBox = ({ searchLabels, getLabels, setCurrentLabel }) => {
   const [input, setInput] = useState({ value: '' });
 
   const findItemsDebounced = useDebouncedCallback(getLabels, 350);
@@ -53,7 +52,7 @@ const Search = ({ searchLabels, getLabels, setCurrentLabel }) => {
                 setCurrentLabel(label);
               }}
             >
-              {label}
+              {boldIfMatch(label, input.value)}
             </DropdownItem>
           ))}
         {isOpen && !searchLabels.length && (
@@ -70,4 +69,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { getLabels, setCurrentLabel })(Search);
+export default connect(mapStateToProps, { getLabels, setCurrentLabel })(
+  FancySearchBox
+);

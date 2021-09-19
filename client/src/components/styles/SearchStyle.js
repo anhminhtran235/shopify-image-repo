@@ -1,13 +1,10 @@
 import styled from 'styled-components';
 
 export const SearchBar = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 400px;
+  width: 250px;
   transition: all 1s;
   position: relative;
-  margin-left: 10px;
+  margin-right: 10px;
 
   :hover {
     cursor: pointer;
@@ -28,8 +25,8 @@ export const SearchBar = styled.div`
     color: var(--lighter-black);
     transition: all 1s;
     width: 100%;
-    padding: 5px 20px;
-    border: 1px solid var(--darker-grey);
+    padding: 10px 20px;
+    border: 1px solid var(--darkest-grey);
     :focus {
       outline: none;
     }
@@ -44,8 +41,9 @@ export const Dropdown = styled.div`
   z-index: 1;
   position: absolute;
   width: 100%;
-  top: 43px;
+  top: 39px;
   box-shadow: 0px 3px 5px 0 rgb(0 0 0 / 30%);
+  font-size: 16px;
 `;
 
 export const DropdownItem = styled.div`
@@ -57,25 +55,14 @@ export const DropdownItem = styled.div`
   border: ${(props) =>
     props.active ? '2px solid yellow' : '1px solid var(--lighter-grey)'};
   padding: 10px 20px;
-  padding-left: ${(props) => (props.active ? '30px' : '10px')};
+  padding-left: ${(props) => (props.active ? '20px' : '10px')};
   line-height: 1;
-  img {
-    width: 50px;
-  }
   p {
     margin: 0;
-  }
-  .book-info {
-    margin-left: 10px;
-    .book-author {
-      font-size: 14px;
-      font-style: italic;
-      margin-top: 5px;
-    }
   }
   :hover {
     background: var(--darker-grey);
     border: 2px solid yellow;
-    padding-left: 30px;
+    padding-left: 20px;
   }
 `;

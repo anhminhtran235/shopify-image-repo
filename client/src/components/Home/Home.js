@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import Image from '../Image/Image';
 import { HomeStyle, ImagesStyle, MenuStyle } from '../styles/HomeStyle';
 import DragAndDrop from '../DragAndDrop/DragAndDrop';
-import Search from '../Search/Search';
+import FancySearchBox from '../Search/FancySearchBox';
 
 import {
   fetchImages,
@@ -13,6 +13,7 @@ import {
   deleteAllMyImages,
 } from '../../redux/actions/images';
 import UploadingProgress from '../UploadingProgress/UploadingProgress';
+import NormalSearchBox from '../Search/NormalSearchBox';
 
 const Home = ({
   images,
@@ -52,8 +53,10 @@ const Home = ({
         <MenuStyle>
           <DragAndDrop />
           <div class='option'>
-            <Search />
+            <NormalSearchBox />
+            <FancySearchBox />
             <div className='btn-group'>
+              <button className='search-btn'>Search</button>
               <button className='btn' onClick={onDeleteAllImages}>
                 Delete ALL of my images
               </button>

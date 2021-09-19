@@ -16,5 +16,6 @@ app.use(express.urlencoded({ limit: '50mb' }));
 
 app.use('/users', require('./routes/users'));
 app.use('/images', require('./routes/images'));
+app.use('/search', require('./routes/search'));
 
 module.exports = app;

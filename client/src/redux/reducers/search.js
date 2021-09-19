@@ -1,9 +1,12 @@
-import { GET_LABEL_SUCCESS, SET_CURRENT_LABEL } from '../actions/types';
+import {
+  GET_LABEL_SUCCESS,
+  SET_CURRENT_LABEL,
+  SET_CURRENT_SEARCH_TEXT,
+} from '../actions/types';
 
 const initialState = {
   searchLabels: [],
   currentLabel: '',
-  searchTexts: [],
   currentSearchText: '',
 };
 
@@ -21,6 +24,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         currentLabel: payload,
+      };
+
+    case SET_CURRENT_SEARCH_TEXT:
+      return {
+        ...state,
+        currentSearchText: payload,
       };
 
     default:

@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const { shallowCloneRemoveFields } = require('../util');
 module.exports = (sequelize, DataTypes) => {
   class Label extends Model {
     /**
@@ -14,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
         as: 'images',
         onDelete: 'CASCADE',
       });
+    }
+
+    toJSON() {
+      return this.get().name;
     }
   }
   Label.init(
