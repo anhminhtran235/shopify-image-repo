@@ -40,15 +40,16 @@ router.post(
     auth,
     check('imageBase64', 'Image is required').not().isEmpty(),
     check('filename', 'Filename is required').not().isEmpty(),
+    check('tempUUID', 'TempUUID is required').not().isEmpty(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    const { imageBase64, filename, tempUUID } = req.body;
 
     try {
-      const { imageBase64, filename } = req.body;
       const { uuid } = req.user;
 
       const user = await User.findOne({ where: { uuid } });
@@ -67,9 +68,12 @@ router.post(
       });
 
       const cloudFrontUrl = getCloudFrontUrl(image.awsKey);
-      return res.json({ url: cloudFrontUrl, ...image.toJSON() });
+      return res.json({ url: cloudFrontUrl, tempUUID, ...image.toJSON() });
     } catch (error) {
-      return defaultExpressErrorHandler(res, error);
+      console.log(error);
+      res
+        .status(500)
+        .json({ errors: [{ msg: 'Something went wrong' }], tempUUID });
     }
   }
 );

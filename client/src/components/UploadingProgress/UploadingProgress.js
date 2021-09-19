@@ -1,3 +1,7 @@
+import { connect } from 'react-redux';
+import { UPLOADING_DONE } from '../../util/enum';
+import { closeUploadingProgress } from '../../redux/actions/ui';
+
 import {
   ImageProgressHeader,
   ImagesProgressStyle,
@@ -5,21 +9,45 @@ import {
 } from '../styles/UploadingProgressStyle';
 import ImageProgress from './ImageProgress';
 
-const UploadingProgress = () => {
-  const imagesInProgress = [1, 2, 3, 4, 5, 6];
-  return (
+const UploadingProgress = ({
+  uploadingImages,
+  isOpened,
+  closeUploadingProgress,
+}) => {
+  const totalImages = uploadingImages.length;
+  const imagesCompleted = uploadingImages.filter(
+    (image) => image.status === UPLOADING_DONE
+  )?.length;
+  return isOpened ? (
     <UploadingProgressStyle>
       <ImageProgressHeader>
-        <p>6 uploads complete</p>
-        <p>X</p>
+        <p>
+          Completed uploading {imagesCompleted} / {totalImages} images
+        </p>
+        <div class='close-btn'>
+          <i onClick={closeUploadingProgress} class='fas fa-times'></i>
+        </div>
       </ImageProgressHeader>
       <ImagesProgressStyle>
-        {imagesInProgress.map((image) => (
-          <ImageProgress />
+        {uploadingImages.map((image) => (
+          <ImageProgress
+            key={image.tempUUID}
+            filename={image.filename}
+            status={image.status}
+          />
         ))}
       </ImagesProgressStyle>
     </UploadingProgressStyle>
-  );
+  ) : null;
 };
 
-export default UploadingProgress;
+const mapStateToProps = (state) => {
+  return {
+    uploadingImages: state.images.uploadingImages,
+    isOpened: state.ui.isUploadingProgressOpened,
+  };
+};
+
+export default connect(mapStateToProps, { closeUploadingProgress })(
+  UploadingProgress
+);

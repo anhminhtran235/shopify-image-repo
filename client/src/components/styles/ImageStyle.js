@@ -29,6 +29,8 @@ export const ImageStyle = styled.div`
       max-width: 300px;
       height: 250px;
       display: flex;
+      justify-content: center;
+      align-items: center;
       margin: auto;
       position: relative;
       img {

@@ -9,7 +9,7 @@ import DragAndDrop from '../DragAndDrop/DragAndDrop';
 import { fetchImages } from '../../redux/actions/images';
 import UploadingProgress from '../UploadingProgress/UploadingProgress';
 
-const Home = ({ images, fetchImages, user }) => {
+const Home = ({ images, fetchImages, user, isAuthenticated }) => {
   useEffect(() => {
     fetchMoreImages();
   }, []);
@@ -21,9 +21,13 @@ const Home = ({ images, fetchImages, user }) => {
 
   return (
     <HomeStyle>
-      <MenuStyle>
-        <DragAndDrop />
-      </MenuStyle>
+      {isAuthenticated ? (
+        <MenuStyle>
+          <DragAndDrop />
+        </MenuStyle>
+      ) : (
+        <h2>Please login to upload and manage images</h2>
+      )}
       <ImagesStyle>
         <InfiniteScroll
           dataLength={images.length}
@@ -34,6 +38,7 @@ const Home = ({ images, fetchImages, user }) => {
             const isMine = image.user.uuid === user?.uuid;
             return (
               <Image
+                key={image.url}
                 isMine={isMine}
                 url={image.url}
                 filename={image.filename}
@@ -51,6 +56,7 @@ const mapStateToProps = (state) => {
   return {
     images: state.images.images,
     user: state.auth.user,
+    isAuthenticated: state.auth.isAuthenticated,
   };
 };
 
