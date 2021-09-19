@@ -1,7 +1,73 @@
-import { SearchStyle } from '../styles/SearchStyle';
+import React, { useState } from 'react';
+import { resetIdCounter, useCombobox } from 'downshift';
+import { connect } from 'react-redux';
 
-const Search = () => {
-  return <SearchStyle>Search</SearchStyle>;
+import { Dropdown, DropdownItem, SearchBar } from '../styles/SearchStyle';
+import { useDebouncedCallback } from '../../util/util';
+import { getLabels, setCurrentLabel } from '.././../redux/actions/search';
+
+const Search = ({ searchLabels, getLabels, setCurrentLabel }) => {
+  console.log(searchLabels);
+  const [input, setInput] = useState({ value: '' });
+
+  const findItemsDebounced = useDebouncedCallback(getLabels, 350);
+  resetIdCounter();
+
+  const {
+    getMenuProps,
+    getInputProps,
+    getComboboxProps,
+    getItemProps,
+    highlightedIndex,
+    isOpen,
+  } = useCombobox({
+    items: searchLabels,
+    onInputValueChange({ inputValue }) {
+      setInput({ value: inputValue });
+      findItemsDebounced(inputValue);
+    },
+    onSelectedItemChange({ selectedItem }) {
+      setCurrentLabel(selectedItem);
+    },
+    itemToString: (label) => label,
+  });
+
+  return (
+    <SearchBar>
+      <div {...getComboboxProps()} className='input-wrapper'>
+        <input
+          {...getInputProps({
+            placeholder: 'Labels',
+            id: 'search',
+          })}
+        />
+      </div>
+      <Dropdown className='dropdown' {...getMenuProps()}>
+        {isOpen &&
+          searchLabels.map((label, index) => (
+            <DropdownItem
+              key={label}
+              {...getItemProps({ item: label })}
+              active={index === highlightedIndex}
+              onClick={() => {
+                setCurrentLabel(label);
+              }}
+            >
+              {label}
+            </DropdownItem>
+          ))}
+        {isOpen && !searchLabels.length && (
+          <DropdownItem>No item found for {input.value}</DropdownItem>
+        )}
+      </Dropdown>
+    </SearchBar>
+  );
 };
 
-export default Search;
+const mapStateToProps = (state) => {
+  return {
+    searchLabels: state.search.searchLabels,
+  };
+};
+
+export default connect(mapStateToProps, { getLabels, setCurrentLabel })(Search);

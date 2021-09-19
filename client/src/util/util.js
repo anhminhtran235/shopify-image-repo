@@ -1,3 +1,6 @@
+import { useCallback, useRef } from 'react';
+import { debounce } from 'lodash';
+
 export const toBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -18,4 +21,29 @@ export const shortenFileName = (filename, maxNameLength = 25) => {
   }
 
   return filename;
+};
+
+export const useDebouncedCallback = (callback, delay) => {
+  const callbackRef = useRef();
+  callbackRef.current = callback;
+  return useCallback(
+    debounce((...args) => callbackRef.current(...args), delay),
+    []
+  );
+};
+
+export const boldIfMatch = (text, strToMatch) => {
+  const startIndex = text.toLowerCase().indexOf(strToMatch.toLowerCase());
+  const endIndex = startIndex + strToMatch.length;
+  if (startIndex === -1) {
+    return text;
+  }
+  const boldText = <b>{text.substring(startIndex, endIndex)}</b>;
+  return (
+    <>
+      {text.substring(0, startIndex)}
+      {boldText}
+      {text.substring(endIndex)}
+    </>
+  );
 };

@@ -9,7 +9,6 @@ import {
   UPLOAD_IMAGE_FAILURE,
   UPLOAD_IMAGE_SUCCESS,
 } from './types';
-import { setShowLoader } from './ui';
 
 import { handleErrors } from '../../util/ErrorHandler';
 import alertify from 'alertifyjs';
