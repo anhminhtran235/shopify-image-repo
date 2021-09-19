@@ -24,8 +24,6 @@ router.get('/', async (req, res) => {
       option.limit = +limit;
     }
 
-    console.log(option);
-
     const images = await Image.findAll(option);
     return res.json(images);
   } catch (error) {

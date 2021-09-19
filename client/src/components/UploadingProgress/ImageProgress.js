@@ -19,13 +19,13 @@ const ImageProgress = ({ filename, status }) => {
 
   return (
     <ImageProgressStyle>
-      <div class='meta-data'>
-        <div class='img-extension'>{extension}</div>
-        <div class='img-name'>{name}</div>
+      <div className='meta-data'>
+        <div className='img-extension'>{extension}</div>
+        <div className='img-name'>{name}</div>
       </div>
-      <div class='status'>
+      <div className='status'>
         {isInProgress && <MiniSpinner />}
-        {isCompleted && <i class='fas fa-check-square'></i>}
+        {isCompleted && <i className='fas fa-check-square'></i>}
       </div>
     </ImageProgressStyle>
   );

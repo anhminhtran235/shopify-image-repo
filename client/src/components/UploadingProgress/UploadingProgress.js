@@ -24,8 +24,8 @@ const UploadingProgress = ({
         <p>
           Completed uploading {imagesCompleted} / {totalImages} images
         </p>
-        <div class='close-btn'>
-          <i onClick={closeUploadingProgress} class='fas fa-times'></i>
+        <div className='close-btn'>
+          <i onClick={closeUploadingProgress} className='fas fa-times'></i>
         </div>
       </ImageProgressHeader>
       <ImagesProgressStyle>

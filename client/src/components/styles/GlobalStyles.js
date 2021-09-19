@@ -21,6 +21,9 @@ const GlobalStyles = createGlobalStyle`
         --darker-black: #222222;
         --darkest-black: #161616;
 
+        --lighter-red: rgb(241, 62, 62);
+        --darker-red: rgb(221, 57, 57);
+
         box-sizing: border-box;
     }
 

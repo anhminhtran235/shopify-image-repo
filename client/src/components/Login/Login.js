@@ -24,7 +24,7 @@ const Login = ({ login, isAuthenticated, loading }) => {
       <Form onSubmit={onSubmit}>
         <fieldset disabled={loading} aria-busy={loading}>
           <h2>Login </h2>
-          <p class='info'>
+          <p className='info'>
             You can use this testing account or create your own
           </p>
           <input

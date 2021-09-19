@@ -9,6 +9,8 @@ import {
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGE_SUCCESS,
   UPLOAD_IMAGE_FAILURE,
+  SET_SELECT_IMAGE,
+  DELETE_IMAGES_SUCCESS,
 } from '../actions/types';
 
 const initialState = {
@@ -33,6 +35,9 @@ export default function (state = initialState, action) {
       };
 
     case UPLOAD_IMAGE_SUCCESS:
+      const updatedImages = [...state.images];
+      updatedImages.unshift(payload);
+
       const updatedUploading = state.uploadingImages.map((image) => ({
         ...image,
       }));
@@ -42,6 +47,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         uploadingImages: updatedUploading,
+        images: updatedImages,
       };
 
     case UPLOAD_IMAGE_FAILURE:
@@ -65,7 +71,28 @@ export default function (state = initialState, action) {
         ...state,
         images: newImageList,
       };
+
     case FETCH_IMAGES_FAILURE:
+      return state;
+
+    case SET_SELECT_IMAGE:
+      const myImages = [...state.images];
+      const image = myImages.find((image) => image.uuid === payload.uuid);
+      image.isSelected = payload.isSelected;
+      return {
+        ...state,
+        images: myImages,
+      };
+
+    case DELETE_IMAGES_SUCCESS:
+      const deletedUUIDs = payload.map((image) => image.uuid);
+      const imagesAfterDelete = state.images.filter(
+        (image) => !deletedUUIDs.includes(image.uuid)
+      );
+      return {
+        ...state,
+        images: imagesAfterDelete,
+      };
     default:
       return state;
   }

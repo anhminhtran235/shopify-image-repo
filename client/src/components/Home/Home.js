@@ -6,10 +6,21 @@ import Image from '../Image/Image';
 import { HomeStyle, ImagesStyle, MenuStyle } from '../styles/HomeStyle';
 import DragAndDrop from '../DragAndDrop/DragAndDrop';
 
-import { fetchImages } from '../../redux/actions/images';
+import {
+  fetchImages,
+  deleteImages,
+  deleteAllMyImages,
+} from '../../redux/actions/images';
 import UploadingProgress from '../UploadingProgress/UploadingProgress';
 
-const Home = ({ images, fetchImages, user, isAuthenticated }) => {
+const Home = ({
+  images,
+  fetchImages,
+  user,
+  isAuthenticated,
+  deleteImages,
+  deleteAllMyImages,
+}) => {
   useEffect(() => {
     fetchMoreImages();
   }, []);
@@ -19,11 +30,36 @@ const Home = ({ images, fetchImages, user, isAuthenticated }) => {
     fetchImages(offset, 10);
   };
 
+  const onDeleteImages = () => {
+    const selectedImageUUIDs = images
+      .filter((image) => image.isSelected)
+      .map((image) => image.uuid);
+
+    deleteImages(selectedImageUUIDs);
+  };
+
+  const onDeleteAllImages = () => {
+    const userUUID = user.uuid;
+    deleteAllMyImages(userUUID);
+  };
+
+  const selectedImagesCount = images.filter((image) => image.isSelected).length;
+
   return (
     <HomeStyle>
       {isAuthenticated ? (
         <MenuStyle>
           <DragAndDrop />
+          <div className='btn-group'>
+            <button className='btn' onClick={onDeleteAllImages}>
+              Delete ALL of my images
+            </button>
+            {selectedImagesCount > 0 && (
+              <button className='btn' onClick={onDeleteImages}>
+                Delete {selectedImagesCount} images
+              </button>
+            )}
+          </div>
         </MenuStyle>
       ) : (
         <h2>Please login to upload and manage images</h2>
@@ -38,7 +74,8 @@ const Home = ({ images, fetchImages, user, isAuthenticated }) => {
             const isMine = image.user.uuid === user?.uuid;
             return (
               <Image
-                key={image.url}
+                key={image.uuid}
+                uuid={image.uuid}
                 isMine={isMine}
                 url={image.url}
                 filename={image.filename}
@@ -60,4 +97,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { fetchImages })(Home);
+export default connect(mapStateToProps, {
+  fetchImages,
+  deleteImages,
+  deleteAllMyImages,
+})(Home);

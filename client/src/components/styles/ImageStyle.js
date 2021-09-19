@@ -1,15 +1,31 @@
 import styled from 'styled-components';
 
+export const OutsideWrapper = styled.div``;
+
+export const Wrapper = styled.div`
+  position: relative;
+  margin: 20px;
+
+  .check-box {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transform: scale(1.5);
+
+    :hover {
+      cursor: pointer;
+    }
+  }
+`;
+
 export const ImageStyle = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative;
   box-shadow: 0 1px 2px rgb(0 0 0 / 40%);
   background: white;
   border-radius: 8px;
-  margin: 20px;
   font-size: 16px;
   padding: 20px 10px;
   transition: 0.2s;
@@ -52,17 +68,4 @@ export const ImageStyle = styled.div`
   .username {
     margin-top: 10px;
   }
-
-  .check-box {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    transform: scale(1.5);
-
-    :hover {
-      cursor: pointer;
-    }
-  }
 `;
-
-export const Wrapper = styled.div``;

@@ -56,7 +56,6 @@ export const ImageProgressStyle = styled.div`
   }
 
   :hover {
-    cursor: pointer;
     background: var(--lighter-grey);
   }
 `;

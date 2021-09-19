@@ -58,7 +58,7 @@ export const login =
       dispatch({ type: LOGIN_IN_PROGRESS });
       const res = await axios.post('users/login', body, config);
       alertify.success('Login successfully');
-
+      console.log(res);
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data,

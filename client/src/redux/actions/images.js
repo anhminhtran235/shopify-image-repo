@@ -1,12 +1,15 @@
 import axios from 'axios';
 import {
+  DELETE_IMAGES_SUCCESS,
   FETCH_IMAGES_FAILURE,
   FETCH_IMAGES_SUCCESS,
+  SET_SELECT_IMAGE,
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGE_FAILURE,
   UPLOAD_IMAGE_SUCCESS,
 } from './types';
 import { handleErrors } from '../../util/ErrorHandler';
+import alertify from 'alertifyjs';
 
 export const fetchImages = (offset, limit) => async (dispatch) => {
   try {
@@ -30,7 +33,7 @@ export const requestUploadImages = (images) => (dispatch) => {
 };
 
 export const uploadImage =
-  (imageBase64, filename, tempUUID) => async (dispatch) => {
+  (imageBase64, filename, tempUUID) => async (dispatch, getState) => {
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -42,6 +45,7 @@ export const uploadImage =
 
     try {
       const res = await axios.post('images/upload', body, config);
+      res.data.user = getState().auth.user;
 
       dispatch({
         type: UPLOAD_IMAGE_SUCCESS,
@@ -56,3 +60,55 @@ export const uploadImage =
       });
     }
   };
+
+export const setSelectImage = (uuid, isSelected) => (dispatch) => {
+  dispatch({
+    type: SET_SELECT_IMAGE,
+    payload: {
+      uuid,
+      isSelected,
+    },
+  });
+};
+
+export const deleteImages = (imageUUIDs) => async (dispatch) => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'x-auth-token': localStorage.getItem('token'),
+    },
+    data: JSON.stringify({ imageUUIDs }),
+  };
+
+  try {
+    const res = await axios.delete('images', config);
+    alertify.success('Successfully deleted ' + res.data.length + ' images ');
+    dispatch({
+      type: DELETE_IMAGES_SUCCESS,
+      payload: res.data,
+    });
+  } catch (error) {
+    handleErrors(error);
+  }
+};
+
+export const deleteAllMyImages = (userUUID) => async (dispatch) => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'x-auth-token': localStorage.getItem('token'),
+    },
+    data: JSON.stringify({ userUUID }),
+  };
+
+  try {
+    const res = await axios.delete('images/all', config);
+    alertify.success('Successfully deleted ' + res.data.length + ' images ');
+    dispatch({
+      type: DELETE_IMAGES_SUCCESS,
+      payload: res.data,
+    });
+  } catch (error) {
+    handleErrors(error);
+  }
+};
