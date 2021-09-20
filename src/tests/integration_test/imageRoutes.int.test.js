@@ -1,7 +1,11 @@
+const config = require('config');
+const jwt = require('jsonwebtoken');
 const request = require('supertest');
 const httpRequest = require('request');
+const fs = require('fs');
+const path = require('path');
 
-const { User, Image, sequelize } = require('../../models');
+const { User, Image, Label, sequelize } = require('../../models');
 const app = require('../../app');
 
 const userData = {
@@ -9,9 +13,19 @@ const userData = {
   password: 'abcdxyz',
 };
 
+const userData2 = {
+  name: 'Test user 2',
+  password: '123456',
+};
+
 const imageData = {
   awsKey: 'aws123',
-  filename: 'image.png',
+  filename: 'abc.png',
+};
+
+const imageData2 = {
+  awsKey: 'abc-123',
+  filename: 'def.jpg',
 };
 
 const pngBase64Image =
@@ -25,13 +39,21 @@ afterAll(async () => {
 
 beforeEach(async () => {
   const user = await User.create(userData);
-
-  await Image.create({ userId: user.id, ...imageData });
+  userData.uuid = user.uuid;
+  const user2 = await User.create(userData2);
+  userData2.uuid = user2.uuid;
+  const label = await Label.create({ name: 'label1' });
+  const label2 = await Label.create({ name: 'label2' });
+  const image = await Image.create({ userId: user.id, ...imageData });
+  await image.addLabel(label);
+  const image2 = await Image.create({ userId: user2.id, ...imageData2 });
+  await image2.addLabel(label2);
 });
 
-afterEach(() => {
-  User.destroy({ where: {}, truncate: true });
-  Image.destroy({ where: {}, truncate: true });
+afterEach(async () => {
+  await User.destroy({ where: {}, truncate: { cascade: true } });
+  await Image.destroy({ where: {}, truncate: { cascade: true } });
+  await Label.destroy({ where: {}, truncate: { cascade: true } });
 });
 
 const registerDummyUser = async ({ name, password }) => {
@@ -41,13 +63,21 @@ const registerDummyUser = async ({ name, password }) => {
   });
 };
 
-const uploadImage = async (imageBase64, filename, token) => {
+const uploadImage = async (
+  imageBase64,
+  filename,
+  token,
+  tempUUID,
+  runAWSRecoknition = false
+) => {
   const uploadResponse = await request(app)
     .post('/images/upload')
     .set('x-auth-token', token)
     .send({
       imageBase64,
       filename,
+      tempUUID,
+      runAWSRecoknition,
     });
   return uploadResponse.body;
 };
@@ -66,18 +96,6 @@ const imageExists = (imageUrl) => {
   });
 };
 
-describe('Test get all images', () => {
-  it('Get all images successfully', async () => {
-    const response = await request(app).get('/images').expect(200);
-    const images = response.body;
-    const image = images[0];
-    expect(images.length).toBe(1);
-    expect(image.filename).toBe(imageData.filename);
-    expect(image.awsKey).toBe(imageData.awsKey);
-    expect(image.user.name).toBe(userData.name);
-  });
-});
-
 describe('Test upload an image', () => {
   it('Upload png image successfully', async () => {
     const dummyUser = {
@@ -86,14 +104,16 @@ describe('Test upload an image', () => {
     };
     const registerResponse = await registerDummyUser(dummyUser);
     const token = registerResponse.body.token;
-    const { url, filename } = await uploadImage(
+    const { url, filename, tempUUID } = await uploadImage(
       pngBase64Image,
       'image.png',
-      token
+      token,
+      'My-UUID'
     );
 
     expect(await imageExists(url)).toBe(true);
     expect(filename).toBe('image.png');
+    expect(tempUUID).toBe('My-UUID');
   });
 
   it('Upload jpg image successfully', async () => {
@@ -103,81 +123,150 @@ describe('Test upload an image', () => {
     };
     const registerResponse = await registerDummyUser(dummyUser);
     const token = registerResponse.body.token;
-    const { url, filename } = await uploadImage(
+    const { url, filename, tempUUID } = await uploadImage(
       jpgBase64Image,
       'image.jpg',
-      token
+      token,
+      'My-UUID'
     );
 
     expect(await imageExists(url)).toBe(true);
     expect(filename).toBe('image.jpg');
+    expect(tempUUID).toBe('My-UUID');
   });
 
-  describe('Test delete multiple images', () => {
-    jest.setTimeout(100000);
+  it('Upload image without required request body', async () => {
+    const dummyUser = {
+      name: 'abcd',
+      password: 'xyz123456',
+    };
+    const registerResponse = await registerDummyUser(dummyUser);
+    const token = registerResponse.body.token;
+    const response = await uploadImage(null, null, token, null);
+    errorMessages = response.errors.map((err) => err.msg);
+    const expectedErrorMessages = [
+      'Image is required',
+      'Filename is required',
+      'TempUUID is required',
+    ];
+    expect(errorMessages).toEqual(
+      expect.arrayContaining(expectedErrorMessages)
+    );
+  });
 
-    it('Delete multiple images successfully', async () => {
-      const dummyUser = {
-        name: 'abcd',
-        password: 'xyz123456',
-      };
-      const registerResponse = await registerDummyUser(dummyUser);
-      const token = registerResponse.body.token;
+  it('Upload image with AWSRecoknition option on', async () => {
+    jest.setTimeout(15000);
+    const dummyUser = {
+      name: 'abcd',
+      password: 'xyz123456',
+    };
+    const registerResponse = await registerDummyUser(dummyUser);
+    const token = registerResponse.body.token;
 
-      const images = [];
-      for (let i = 0; i < 5; i++) {
-        const { url, uuid } = await uploadImage(
-          jpgBase64Image,
-          'image.jpg',
-          token
-        );
-        if (i < 3) {
-          images.push({ url, uuid });
-        }
+    const base64Image = fs.readFileSync(
+      path.resolve(__dirname, '../resources/testImage.jfif'),
+      {
+        encoding: 'base64',
       }
+    );
 
-      const deleteResponse = await request(app)
-        .delete('/images')
-        .set('x-auth-token', token)
-        .send({
-          imageUUIDs: images.map((image) => image.uuid),
-        })
-        .expect(200);
+    const { url, filename, tempUUID, uuid } = await uploadImage(
+      base64Image,
+      'image.jpg',
+      token,
+      'My-UUID',
+      true
+    );
 
-      const deletedImages = deleteResponse.body;
-      expect(deletedImages.length).toBe(3);
-      expect(deletedImages[0].uuid).not.toBeNull();
-    });
+    const waitForAWSRecoknitionToProcess = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(async () => {
+          try {
+            const uploadedImage = await Image.findOne({
+              where: { uuid },
+              include: ['labels'],
+            });
+            resolve(uploadedImage);
+          } catch (error) {
+            reject(error);
+          }
+        }, 2000);
+      });
+    };
 
-    it('Delete all images successfully', async () => {
-      const dummyUser = {
-        name: 'abcd',
-        password: 'xyz123456',
-      };
-      const registerResponse = await registerDummyUser(dummyUser);
-      const token = registerResponse.body.token;
+    const uploadedImage = await waitForAWSRecoknitionToProcess();
 
-      const images = [];
-      for (let i = 0; i < 3; i++) {
-        const { url, uuid } = await uploadImage(
-          jpgBase64Image,
-          'image.jpg',
-          token
-        );
+    expect(await imageExists(url)).toBe(true);
+    expect(filename).toBe('image.jpg');
+    expect(tempUUID).toBe('My-UUID');
+    expect(uploadedImage.labels.length).toBeGreaterThan(0);
+  });
+});
+
+describe('Test delete multiple images', () => {
+  jest.setTimeout(100000);
+
+  it('Delete multiple images successfully', async () => {
+    const dummyUser = {
+      name: 'abcd',
+      password: 'xyz123456',
+    };
+    const registerResponse = await registerDummyUser(dummyUser);
+    const token = registerResponse.body.token;
+
+    const images = [];
+    for (let i = 0; i < 5; i++) {
+      const { url, uuid } = await uploadImage(
+        jpgBase64Image,
+        'image.jpg',
+        token,
+        'UUID'
+      );
+      if (i < 3) {
         images.push({ url, uuid });
       }
+    }
 
-      const deleteResponse = await request(app)
-        .delete('/images')
-        .set('x-auth-token', token)
-        .send({
-          imageUUIDs: images.map((image) => image.uuid),
-        })
-        .expect(200);
+    const deleteResponse = await request(app)
+      .delete('/images')
+      .set('x-auth-token', token)
+      .send({
+        imageUUIDs: images.map((image) => image.uuid),
+      })
+      .expect(200);
 
-      const deletedImages = deleteResponse.body;
-      expect(deletedImages.length).toBe(3);
-      expect(deletedImages[0].uuid).not.toBeNull();
-    });
+    const deletedImages = deleteResponse.body;
+    expect(deletedImages.length).toBe(3);
+    expect(deletedImages[0].uuid).not.toBeNull();
+  });
+
+  it('Delete all images successfully', async () => {
+    const dummyUser = {
+      name: 'abcd',
+      password: 'xyz123456',
+    };
+    const registerResponse = await registerDummyUser(dummyUser);
+    const token = registerResponse.body.token;
+
+    const images = [];
+    for (let i = 0; i < 3; i++) {
+      const { url, uuid } = await uploadImage(
+        jpgBase64Image,
+        'image.jpg',
+        token,
+        'UUID'
+      );
+      images.push({ url, uuid });
+    }
+
+    const deleteResponse = await request(app)
+      .delete('/images/all')
+      .set('x-auth-token', token)
+      .send()
+      .expect(200);
+
+    const deletedImages = deleteResponse.body;
+    expect(deletedImages.length).toBe(3);
+    expect(deletedImages[0].uuid).not.toBeNull();
   });
 });

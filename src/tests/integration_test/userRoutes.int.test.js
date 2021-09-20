@@ -2,7 +2,7 @@ const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
-const { User, Image, sequelize } = require('../../models');
+const { User, Image, Label, sequelize } = require('../../models');
 const app = require('../../app');
 
 const userData = [
@@ -21,8 +21,10 @@ beforeEach(async () => {
   users.push(await User.create(userData[1]));
 });
 
-afterEach(() => {
-  User.destroy({ where: {}, truncate: true });
+afterEach(async () => {
+  await User.destroy({ where: {}, truncate: { cascade: true } });
+  await Image.destroy({ where: {}, truncate: { cascade: true } });
+  await Label.destroy({ where: {}, truncate: { cascade: true } });
 });
 
 const registerDummyUser = async ({ name, password }) => {
@@ -31,6 +33,39 @@ const registerDummyUser = async ({ name, password }) => {
     password,
   });
 };
+
+describe('Test get current user', () => {
+  it('Get current user successfully', async () => {
+    let response = await request(app)
+      .post('/users/register')
+      .send({
+        name: 'A new user',
+        password: '123456',
+      })
+      .expect(200);
+    const token = response.body.token;
+
+    response = await request(app)
+      .get('/users/me')
+      .set('x-auth-token', token)
+      .expect(200);
+    const currentUser = response.body;
+
+    expect(currentUser.uuid).not.toBeNull();
+    expect(currentUser.name).toContain('A new user');
+  });
+
+  it('Get current with no token, should fail', async () => {
+    response = await request(app).get('/users/me').expect(401);
+  });
+
+  it('Get current with invalid token, should fail', async () => {
+    response = await request(app)
+      .get('/users/me')
+      .set('x-auth-token', 'INVALID_TOKEN')
+      .expect(401);
+  });
+});
 
 describe('Test get all users', () => {
   it('Get all users successfully', async () => {
@@ -91,7 +126,7 @@ describe('Test register new user', () => {
     expect(decodedToken.user.uuid).toBe(user.uuid);
   });
 
-  it('Should fail if username or password is invalid', async () => {
+  it('Should fail to register if username or password is invalid', async () => {
     const response = await request(app)
       .post('/users/register')
       .send({
@@ -105,6 +140,26 @@ describe('Test register new user', () => {
     const expectedErrorMessages = [
       'User name is required',
       'Password must have 6 or more characters',
+    ];
+    expect(errorMessages).toEqual(
+      expect.arrayContaining(expectedErrorMessages)
+    );
+  });
+
+  it('Should fail to register if username already exists', async () => {
+    const response = await request(app)
+      .post('/users/register')
+      .send({
+        name: userData[0].name,
+        password: '123456',
+      })
+      .expect(400);
+
+    const errors = response.body.errors;
+    const errorMessages = errors.map((err) => err.msg);
+
+    const expectedErrorMessages = [
+      `User with name ${userData[0].name} already exists`,
     ];
     expect(errorMessages).toEqual(
       expect.arrayContaining(expectedErrorMessages)
@@ -144,6 +199,40 @@ describe('Test login', () => {
       'User name is required',
       'Password is required',
     ];
+    expect(errorMessages).toEqual(
+      expect.arrayContaining(expectedErrorMessages)
+    );
+  });
+
+  it('Login fail if wrong username', async () => {
+    const response = await request(app)
+      .post('/users/login')
+      .send({
+        name: 'user_name_not_exists',
+        password: 'password',
+      })
+      .expect(400);
+    const errors = response.body.errors;
+    const errorMessages = errors.map((err) => err.msg);
+
+    const expectedErrorMessages = ['Invalid credentials'];
+    expect(errorMessages).toEqual(
+      expect.arrayContaining(expectedErrorMessages)
+    );
+  });
+
+  it('Login fail if wrong password', async () => {
+    const response = await request(app)
+      .post('/users/login')
+      .send({
+        name: userData[0].name,
+        password: 'wrong_password',
+      })
+      .expect(400);
+    const errors = response.body.errors;
+    const errorMessages = errors.map((err) => err.msg);
+
+    const expectedErrorMessages = ['Invalid credentials'];
     expect(errorMessages).toEqual(
       expect.arrayContaining(expectedErrorMessages)
     );

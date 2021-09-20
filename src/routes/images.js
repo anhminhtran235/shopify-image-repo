@@ -15,73 +15,6 @@ const {
 
 const { detectLabels } = require('../AmazonRecoknition/AmazonRecoknition');
 
-// Get images with pagination and query
-router.get('/', async (req, res) => {
-  try {
-    let { offset, limit, searchText, label } = req.query;
-    if (!offset) {
-      offset = 0;
-    }
-    if (!limit) {
-      limit = 10000000000000;
-    }
-
-    let queryString = `SELECT DISTINCT \`Image\`.\`uuid\` as uuid,
-                                \`Image\`.\`filename\` as filename,
-                                \`Image\`.\`awskey\` as awsKey,
-                                \`Image\`.\`createdat\` as createdAt,
-                                \`Image\`.\`updatedat\` as updatedAt,
-                                \`user\`.\`uuid\`                   AS \`user.uuid\`,
-                                \`user\`.\`name\`                   AS \`user.name\`,
-                                \`user\`.\`createdat\`              AS \`user.createdAt\`,
-                                \`user\`.\`updatedat\`              AS \`user.updatedAt\`
-                                FROM   \`images\` AS \`Image\`
-                                LEFT OUTER JOIN \`users\` AS \`user\`
-                                            ON \`Image\`.\`userid\` = \`user\`.\`id\`
-                                INNER JOIN ( \`image_label\` INNER JOIN \`labels\`
-                                                    ON \`labels\`.\`id\` = \`image_label\`.\`labelid\`)
-                                        ON \`Image\`.\`id\` = \`image_label\`.\`imageid\``;
-    if (searchText) {
-      queryString += `WHERE  ( \`user\`.\`name\` LIKE '%${searchText}%'
-      OR \`Image\`.\`filename\` LIKE '%${searchText}%' )`;
-    }
-    if (label) {
-      queryString += `AND \`labels\`.\`name\` = '${label}'`;
-    }
-
-    queryString += ` ORDER  BY \`Image\`.\`createdat\` DESC
-    LIMIT ${limit} OFFSET ${offset}`;
-
-    const images = await sequelize.query(queryString, {
-      type: QueryTypes.SELECT,
-    });
-
-    const beautifiedImages = [];
-    images.forEach((image) => {
-      const beautifiedImage = {};
-      beautifiedImage.uuid = image.uuid;
-      beautifiedImage.filename = image.filename;
-      beautifiedImage.awsKey = image.awsKey;
-      beautifiedImage.createdAt = image.createdAt;
-      beautifiedImage.updatedAt = image.updatedAt;
-      beautifiedImage.url = getCloudFrontUrl(beautifiedImage.awsKey);
-
-      beautifiedImage.user = {};
-      beautifiedImage.user.uuid = image['user.uuid'];
-      beautifiedImage.user.name = image['user.name'];
-      beautifiedImage.user.createdAt = image['user.createdAt'];
-      beautifiedImage.user.updatedAt = image['user.updatedAt'];
-
-      beautifiedImages.push(beautifiedImage);
-    });
-    console.log(beautifiedImages);
-
-    return res.json(beautifiedImages);
-  } catch (error) {
-    return defaultExpressErrorHandler(res, error);
-  }
-});
-
 // Upload new image
 router.post(
   '/upload',
@@ -96,7 +29,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { imageBase64, filename, tempUUID } = req.body;
+    const { imageBase64, filename, tempUUID, runAWSRecoknition } = req.body;
 
     try {
       const { uuid } = req.user;
@@ -116,24 +49,26 @@ router.post(
         userId: user.id,
       });
 
-      detectLabels(uploadResult.Key).then(async (result) => {
-        const labelNames = result.Labels.map((label) => label.Name);
-        const existingLabels = await Label.findAll({
-          where: { name: labelNames },
-        });
-        const existingLabelNames = existingLabels.map((label) => label.name);
-        const newLabelNames = labelNames.filter(
-          (labelName) => !existingLabelNames.includes(labelName)
-        );
-        const newLabels = await Label.bulkCreate(
-          newLabelNames.map((labelName) => ({ name: labelName }))
-        );
+      if (runAWSRecoknition) {
+        detectLabels(uploadResult.Key).then(async (result) => {
+          const labelNames = result.Labels.map((label) => label.Name);
+          const existingLabels = await Label.findAll({
+            where: { name: labelNames },
+          });
+          const existingLabelNames = existingLabels.map((label) => label.name);
+          const newLabelNames = labelNames.filter(
+            (labelName) => !existingLabelNames.includes(labelName)
+          );
+          const newLabels = await Label.bulkCreate(
+            newLabelNames.map((labelName) => ({ name: labelName }))
+          );
 
-        const allLabels = [...existingLabels, newLabels];
-        for (let i = 0; i < allLabels.length; i++) {
-          await image.addLabel(allLabels[i]);
-        }
-      });
+          const allLabels = [...existingLabels, newLabels];
+          for (let i = 0; i < allLabels.length; i++) {
+            await image.addLabel(allLabels[i]);
+          }
+        });
+      }
 
       const cloudFrontUrl = getCloudFrontUrl(image.awsKey);
       return res.json({ url: cloudFrontUrl, tempUUID, ...image.toJSON() });
@@ -188,7 +123,6 @@ router.delete('/', auth, async (req, res) => {
 router.delete('/all', auth, async (req, res) => {
   try {
     const { uuid: userUUID } = req.user;
-
     const user = await User.findOne({
       where: { uuid: userUUID },
       include: 'images',

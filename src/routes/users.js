@@ -9,6 +9,7 @@ const { User, Image } = require('../models');
 const { defaultExpressErrorHandler } = require('../util');
 const auth = require('../middleware/auth');
 
+// Get my info
 router.get('/me', auth, async (req, res) => {
   try {
     const { uuid } = req.user;
@@ -20,6 +21,7 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
+// Get all users
 router.get('/', async (req, res) => {
   try {
     const users = await User.findAll({ include: 'images' });
@@ -30,6 +32,7 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Login
 router.post(
   '/login',
   [
@@ -81,6 +84,7 @@ router.post(
   }
 );
 
+// Register
 router.post(
   '/register',
   [

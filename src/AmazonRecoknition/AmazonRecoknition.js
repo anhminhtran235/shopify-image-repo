@@ -22,8 +22,8 @@ const detectLabels = (awsKey) => {
         Name: awsKey,
       },
     },
-    MaxLabels: 5,
-    MinConfidence: 90,
+    MaxLabels: 3,
+    MinConfidence: 98,
   };
 
   return rekognition.detectLabels(params).promise();

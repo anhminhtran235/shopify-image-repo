@@ -17,7 +17,7 @@ export const fetchImages =
   (offset, limit, searchText, label) => async (dispatch) => {
     try {
       const res = await axios.get(
-        `images?offset=${offset}&limit=${limit}&searchText=${searchText}&label=${label}`
+        `search?offset=${offset}&limit=${limit}&searchText=${searchText}&label=${label}`
       );
 
       dispatch({
@@ -46,7 +46,12 @@ export const uploadImage =
       },
     };
 
-    const body = JSON.stringify({ imageBase64, filename, tempUUID });
+    const body = JSON.stringify({
+      imageBase64,
+      filename,
+      tempUUID,
+      runAWSRecoknition: true, // During most TEST cases this boolean will be false
+    });
 
     try {
       const res = await axios.post('images/upload', body, config);
