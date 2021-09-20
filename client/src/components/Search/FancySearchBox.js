@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { resetIdCounter, useCombobox } from 'downshift';
+import Downshift from 'downshift';
 import { connect } from 'react-redux';
 
 import { Dropdown, DropdownItem, SearchBar } from '../styles/SearchStyle';
@@ -19,6 +20,8 @@ const FancySearchBox = ({ searchLabels, getLabels, setTempLabel }) => {
     getItemProps,
     highlightedIndex,
     isOpen,
+    closeMenu,
+    selectItem,
   } = useCombobox({
     items: searchLabels,
     onInputValueChange({ inputValue }) {
@@ -50,7 +53,9 @@ const FancySearchBox = ({ searchLabels, getLabels, setTempLabel }) => {
               {...getItemProps({ item: label })}
               active={index === highlightedIndex}
               onClick={() => {
+                selectItem(label);
                 setTempLabel(label);
+                closeMenu();
               }}
             >
               {boldIfMatch(label, input.value)}

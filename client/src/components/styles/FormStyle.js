@@ -20,7 +20,7 @@ const loading = keyframes`
 `;
 
 export const Form = styled.form`
-  background: white;
+  /* background: white; */
   fieldset {
     display: flex;
     flex-direction: column;

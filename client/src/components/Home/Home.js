@@ -78,25 +78,29 @@ const Home = ({
         <h2>Please login to upload and manage images</h2>
       )}
       <ImagesStyle>
-        <InfiniteScroll
-          dataLength={images.length}
-          next={fetchMoreImages}
-          hasMore={true}
-        >
-          {images.map((image) => {
-            const isMine = image.user.uuid === user?.uuid;
-            return (
-              <Image
-                key={image.uuid}
-                uuid={image.uuid}
-                isMine={isMine}
-                url={image.url}
-                filename={image.filename}
-                ownerName={image.user.name}
-              />
-            );
-          })}
-        </InfiniteScroll>
+        {images.length === 0 ? (
+          <h2>No image found</h2>
+        ) : (
+          <InfiniteScroll
+            dataLength={images.length}
+            next={fetchMoreImages}
+            hasMore={true}
+          >
+            {images.map((image) => {
+              const isMine = image.user.uuid === user?.uuid;
+              return (
+                <Image
+                  key={image.uuid}
+                  uuid={image.uuid}
+                  isMine={isMine}
+                  url={image.url}
+                  filename={image.filename}
+                  ownerName={image.user.name}
+                />
+              );
+            })}
+          </InfiniteScroll>
+        )}
       </ImagesStyle>
       <UploadingProgress />
     </HomeStyle>

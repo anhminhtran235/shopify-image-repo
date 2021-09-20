@@ -38,6 +38,8 @@ const GlobalStyles = createGlobalStyle`
         padding: 0;
         margin: 0;
         font-size: 20px;
+        background: var(--lighter-grey);
+        min-height: 100vh;
     }
 
     ul {
