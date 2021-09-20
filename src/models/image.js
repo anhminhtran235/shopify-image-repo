@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 const { shallowCloneRemoveFields } = require('../util');
-const { getCloudFrontUrl } = require('../S3/s3');
+const { getCloudFrontUrl } = require('../S3/s3Service');
 
 module.exports = (sequelize, DataTypes) => {
   class Image extends Model {

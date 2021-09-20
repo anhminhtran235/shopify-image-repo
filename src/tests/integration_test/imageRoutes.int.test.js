@@ -155,7 +155,7 @@ describe('Test upload an image', () => {
   });
 
   it('Upload image with AWSRecoknition option on', async () => {
-    jest.setTimeout(15000);
+    jest.setTimeout(10000);
     const dummyUser = {
       name: 'abcd',
       password: 'xyz123456',
@@ -204,7 +204,7 @@ describe('Test upload an image', () => {
 });
 
 describe('Test delete multiple images', () => {
-  jest.setTimeout(100000);
+  jest.setTimeout(10000);
 
   it('Delete multiple images successfully', async () => {
     const dummyUser = {

@@ -1,20 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
-const config = require('config');
-const jwt = require('jsonwebtoken');
 
-const { User, Image } = require('../models');
-const { defaultExpressErrorHandler } = require('../util');
+const userService = require('../services/userService');
+const {
+  defaultExpressErrorHandler,
+  defaultRequestValidator,
+} = require('../util');
 const auth = require('../middleware/auth');
 
 // Get my info
 router.get('/me', auth, async (req, res) => {
   try {
     const { uuid } = req.user;
-    const user = await User.findOne({ where: { uuid } });
-
+    const user = await userService.getMyInfo(uuid);
     return res.json(user);
   } catch (error) {
     return defaultExpressErrorHandler(res, error);
@@ -24,8 +23,7 @@ router.get('/me', auth, async (req, res) => {
 // Get all users
 router.get('/', async (req, res) => {
   try {
-    const users = await User.findAll({ include: 'images' });
-
+    const users = await userService.getAllUsers();
     return res.json(users);
   } catch (error) {
     return defaultExpressErrorHandler(res, error);
@@ -40,44 +38,12 @@ router.post(
     check('password', 'Password is required').not().isEmpty(),
   ],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     try {
+      defaultRequestValidator(req);
+
       const { name, password } = req.body;
-      const user = await User.findOne({ where: { name } });
-      if (!user) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Invalid credentials' }] });
-      }
-
-      const passwordMatches = await bcrypt.compare(password, user.password);
-      if (!passwordMatches) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Invalid credentials' }] });
-      }
-
-      const payload = {
-        user: {
-          uuid: user.uuid,
-        },
-      };
-
-      jwt.sign(
-        payload,
-        config.get('JWT_SECRET'),
-        { expiresIn: 360000 },
-        (err, token) => {
-          if (err) {
-            throw err;
-          }
-          res.json({ user, token });
-        }
-      );
+      const response = await userService.login(name, password);
+      res.json(response);
     } catch (error) {
       return defaultExpressErrorHandler(res, error);
     }
@@ -94,43 +60,12 @@ router.post(
     }),
   ],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     try {
+      defaultRequestValidator(req);
+
       const { name, password } = req.body;
-      if (await User.findOne({ where: { name } })) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: `User with name ${name} already exists` }] });
-      }
-
-      let user = {
-        name,
-      };
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
-      user = await User.create(user);
-
-      const payload = {
-        user: {
-          uuid: user.uuid,
-        },
-      };
-
-      jwt.sign(
-        payload,
-        config.get('JWT_SECRET'),
-        { expiresIn: 360000 },
-        (err, token) => {
-          if (err) {
-            throw err;
-          }
-          res.json({ user, token });
-        }
-      );
+      const response = await userService.register(name, password);
+      res.json(response);
     } catch (error) {
       return defaultExpressErrorHandler(res, error);
     }

@@ -211,7 +211,7 @@ describe('Test login', () => {
         name: 'user_name_not_exists',
         password: 'password',
       })
-      .expect(400);
+      .expect(401);
     const errors = response.body.errors;
     const errorMessages = errors.map((err) => err.msg);
 
@@ -228,7 +228,7 @@ describe('Test login', () => {
         name: userData[0].name,
         password: 'wrong_password',
       })
-      .expect(400);
+      .expect(401);
     const errors = response.body.errors;
     const errorMessages = errors.map((err) => err.msg);
 
