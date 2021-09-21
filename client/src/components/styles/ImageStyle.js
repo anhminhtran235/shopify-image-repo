@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const OutsideWrapper = styled.div``;
 
@@ -53,6 +53,7 @@ export const ImageStyle = styled.div`
       img {
         max-width: 100%;
         max-height: 100%;
+        object-fit: contain;
         display: inline-block;
       }
     }

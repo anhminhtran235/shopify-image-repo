@@ -5,6 +5,9 @@ export const SearchBar = styled.div`
   transition: all 1s;
   position: relative;
   margin-right: 10px;
+  @media (max-width: 865px) {
+    margin-top: 10px;
+  }
 
   :hover {
     cursor: pointer;

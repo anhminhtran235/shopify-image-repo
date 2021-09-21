@@ -5,6 +5,11 @@ export const HomeStyle = styled.div`
   flex-direction: column;
   padding: 20px;
   background: var(--lighter-grey);
+
+  @media (max-width: 415px) {
+    justify-content: center;
+    text-align: center;
+  }
 `;
 
 export const MenuStyle = styled.div`
@@ -15,12 +20,15 @@ export const MenuStyle = styled.div`
 
   .option {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     margin-top: 20px;
     .btn-group {
       display: flex;
-
+      @media (max-width: 865px) {
+        margin-top: 20px;
+      }
       .btn:first-child {
         /* margin-bottom: 10px; */
       }

@@ -4,8 +4,8 @@ export const DragAndDropStyle = styled.div`
   border: 3px dashed var(--lighter-black);
   padding: 10px 20px;
   text-align: center;
+  max-width: 98%;
   width: 500px;
-
   background: ${(props) =>
     props.isDragActive ? 'var(--darkest-grey)' : 'var(--lighter-grey)'};
 
