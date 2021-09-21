@@ -5,6 +5,7 @@ const { Op, QueryTypes } = require('sequelize');
 const findAllMatchingLabels = (labelName) => {
   return labelRepo.findAll({
     where: { name: { [Op.like]: `%${labelName}%` } },
+    order: [['name', 'ASC']],
   });
 };
 
