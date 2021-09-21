@@ -35,6 +35,9 @@ const uploadBase64Image = (base64Image) => {
 };
 
 const deleteImages = (awsKeys) => {
+  if (awsKeys.length === 0) {
+    return;
+  }
   const objects = awsKeys.map((awsKey) => ({
     Key: awsKey,
   }));

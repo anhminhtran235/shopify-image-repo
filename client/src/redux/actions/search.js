@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {
   CLEAR_IMAGES,
   GET_LABEL_SUCCESS,
@@ -9,16 +8,11 @@ import {
 } from './types';
 import { handleErrors } from '../../util/ErrorHandler';
 import { fetchImages } from './images';
+import * as searchService from '../../services/searchService';
 
 export const getLabels = (labelName) => async (dispatch) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
   try {
-    const res = await axios.get('search/labels?name=' + labelName, config);
+    const res = await searchService.getLabels(labelName);
     dispatch({
       type: GET_LABEL_SUCCESS,
       payload: res.data,

@@ -269,4 +269,23 @@ describe('Test delete multiple images', () => {
     expect(deletedImages.length).toBe(3);
     expect(deletedImages[0].uuid).not.toBeNull();
   });
+
+  it('Can complete deleting images request even if there is no images', async () => {
+    const dummyUser = {
+      name: 'abcd',
+      password: 'xyz123456',
+    };
+    const registerResponse = await registerDummyUser(dummyUser);
+    const token = registerResponse.body.token;
+    await Image.destroy({ where: {}, truncate: { cascade: true } });
+
+    const deleteResponse = await request(app)
+      .delete('/images/all')
+      .set('x-auth-token', token)
+      .send()
+      .expect(200);
+
+    const deletedImages = deleteResponse.body;
+    expect(deletedImages.length).toBe(0);
+  });
 });

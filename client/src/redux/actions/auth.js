@@ -1,5 +1,6 @@
-import axios from 'axios';
 import alertify from 'alertifyjs';
+
+import * as authService from '../../services/authService';
 
 import {
   REGISTER_SUCCESS,
@@ -14,20 +15,32 @@ import {
 } from '../actions/types';
 import { handleErrors } from '../../util/ErrorHandler';
 
+export const login =
+  ({ name, password }) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: LOGIN_IN_PROGRESS });
+      const res = await authService.login(name, password);
+      alertify.success('Login successfully');
+
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: res.data,
+      });
+    } catch (error) {
+      handleErrors(error);
+      dispatch({
+        type: LOGIN_FAILURE,
+      });
+    }
+  };
+
 export const register =
   ({ name, password }) =>
   async (dispatch) => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const body = JSON.stringify({ name, password });
-
     try {
       dispatch({ type: REGISTER_IN_PROGRESS });
-      const res = await axios.post('users/register', body, config);
+      const res = await authService.register(name, password);
       alertify.success('Register successfully');
 
       dispatch({
@@ -43,44 +56,9 @@ export const register =
     }
   };
 
-export const login =
-  ({ name, password }) =>
-  async (dispatch) => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const body = JSON.stringify({ name, password });
-
-    try {
-      dispatch({ type: LOGIN_IN_PROGRESS });
-      const res = await axios.post('users/login', body, config);
-      alertify.success('Login successfully');
-      console.log(res);
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: res.data,
-      });
-    } catch (error) {
-      handleErrors(error);
-
-      dispatch({
-        type: LOGIN_FAILURE,
-      });
-    }
-  };
-
 export const getMe = () => async (dispatch) => {
-  const config = {
-    headers: {
-      'x-auth-token': localStorage.getItem('token'),
-    },
-  };
-
   try {
-    const res = await axios.get('users/me', config);
+    const res = await authService.getMe();
 
     dispatch({
       type: GET_ME_SUCCESS,
