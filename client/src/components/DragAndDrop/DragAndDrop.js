@@ -38,7 +38,7 @@ const DragAndDrop = ({
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: 'image/*',
+    accept: 'image/jpeg, image/png',
   });
 
   return (
