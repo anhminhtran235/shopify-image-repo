@@ -1,7 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
-    @import url('https://fonts.googleapis.com/css?family=Montserrat:400,900|Roboto');
     @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
 
     html {
@@ -34,7 +33,6 @@ const GlobalStyles = createGlobalStyle`
     }
 
     body {
-        font-family: 'Montserrat';
         padding: 0;
         margin: 0;
         font-size: 20px;

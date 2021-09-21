@@ -20,6 +20,7 @@
     "react-redux": "^7.2.5",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
+    "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.3.1",
     "uuid": "^8.3.2",
@@ -53,7 +54,6 @@
   "devDependencies": {
     "config": "^3.3.6",
     "cypress": "^8.4.1",
-    "redux-devtools-extension": "^2.13.9",
     "sequelize": "^6.6.5"
   },
   "proxy": "http://localhost:5000/"
