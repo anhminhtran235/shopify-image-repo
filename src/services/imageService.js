@@ -129,10 +129,13 @@ const getImagesFromSearchQueries = async (offset, limit, searchText, label) => {
     \`user\`.\`updatedat\` AS \`user.updatedAt\`
       FROM   \`images\` AS \`Image\`
       LEFT OUTER JOIN \`users\` AS \`user\`
-                  ON \`Image\`.\`userid\` = \`user\`.\`id\`
-      INNER JOIN ( \`image_label\` INNER JOIN \`labels\`
-                          ON \`labels\`.\`id\` = \`image_label\`.\`labelid\`)
-              ON \`Image\`.\`id\` = \`image_label\`.\`imageid\``;
+                  ON \`Image\`.\`userid\` = \`user\`.\`id\``;
+
+  if (label) {
+    queryString += ` INNER JOIN ( \`image_label\` INNER JOIN \`labels\`
+                    ON \`labels\`.\`id\` = \`image_label\`.\`labelid\`)
+                ON \`Image\`.\`id\` = \`image_label\`.\`imageid\``;
+  }
 
   if (searchText) {
     queryString += ` WHERE  ( \`user\`.\`name\` LIKE ?

@@ -1,7 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 const { shallowCloneRemoveFields } = require('../util');
-const { getCloudFrontUrl } = require('../S3/s3Service');
+// const { getCloudFrontUrl } = require('../S3/s3Service');
 
 module.exports = (sequelize, DataTypes) => {
   class Image extends Model {
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 
     toJSON() {
       const image = shallowCloneRemoveFields(this.get(), 'id', 'userId');
-      image.url = getCloudFrontUrl(image.awsKey);
+      // image.url = getCloudFrontUrl(image.awsKey);
       return image;
     }
   }

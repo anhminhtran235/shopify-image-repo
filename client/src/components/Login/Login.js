@@ -8,8 +8,8 @@ import { login } from '../../redux/actions/auth';
 
 const Login = ({ login, isAuthenticated, loading }) => {
   const { form, handleChange } = useForm({
-    username: 'minh123',
-    password: '123456',
+    username: '',
+    password: '',
   });
 
   const onSubmit = async (e) => {

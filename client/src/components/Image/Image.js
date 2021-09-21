@@ -37,6 +37,7 @@ const Image = ({ uuid, isMine, url, filename, ownerName, setSelectImage }) => {
             type='checkbox'
             onClick={handleClickCheckbox}
             className='check-box'
+            data-test-id={filename}
           />
         )}
       </Wrapper>

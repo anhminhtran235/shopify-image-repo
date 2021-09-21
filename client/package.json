@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@testing-library/cypress": "^8.0.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "alertifyjs": "^1.13.1",
     "axios": "^0.21.4",
+    "cross-env": "^7.0.3",
+    "cypress-file-upload": "^5.0.8",
     "downshift": "^6.1.7",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
@@ -26,7 +29,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cy:run": "cross-env NODE_ENV=test npx cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -47,7 +51,9 @@
     ]
   },
   "devDependencies": {
-    "redux-devtools-extension": "^2.13.9"
+    "cypress": "^8.4.1",
+    "redux-devtools-extension": "^2.13.9",
+    "sequelize": "^6.6.5"
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000/"
 }

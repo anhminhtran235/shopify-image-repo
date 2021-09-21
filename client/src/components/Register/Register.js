@@ -9,9 +9,9 @@ import { register } from '../../redux/actions/auth';
 
 const Register = ({ register, isAuthenticated, loading }) => {
   const { form, handleChange } = useForm({
-    username: 'minh123',
-    password: '123456',
-    confirmPassword: '123456',
+    username: '',
+    password: '',
+    confirmPassword: '',
   });
 
   const onSubmit = async (e) => {
@@ -43,6 +43,7 @@ const Register = ({ register, isAuthenticated, loading }) => {
             value={form.password}
             name='password'
             onChange={handleChange}
+            data-test-id='password'
           />
           <input
             type='password'
