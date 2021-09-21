@@ -3,29 +3,23 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
+const config = require('config');
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], {
-    ...config,
+const dbConfig = config.get('DATABASE');
+const sequelize = new Sequelize(
+  dbConfig.database,
+  dbConfig.username,
+  dbConfig.password,
+  {
+    ...dbConfig,
     retry: {
       match: [/Deadlock/i],
       max: 3,
     },
-  });
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, {
-    ...config,
-    retry: {
-      match: [/Deadlock/i],
-      max: 3,
-    },
-  });
-}
+  }
+);
 
 fs.readdirSync(__dirname)
   .filter((file) => {
